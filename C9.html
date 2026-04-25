@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repaso PAES Física - Luz</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            startup: { typeset: true }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background-color: #f8fafc;
+        }
+
+        #main-container {
+            width: 100vw;
+            height: calc(100vh - 6rem);
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            height: 100%;
+            width: 100%;
+            animation: fadeIn 0.4s ease-out;
+            flex-direction: column;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2rem;
+        }
+
+        .slide.active {
+            display: flex;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            border-radius: 1.5rem;
+        }
+
+        ::-webkit-scrollbar { width: 14px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #818cf8; border-radius: 8px; border: 3px solid #f1f5f9; }
+        ::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
+        .scrollable-content::-webkit-scrollbar { width: 10px; }
+
+        .fade-in { opacity: 0; transition: opacity 0.6s ease-in-out; pointer-events: none; }
+        .visible { opacity: 1 !important; pointer-events: auto !important; }
+
+        .opt-hover { transition: all 0.2s; }
+        .opt-hover:hover { background-color: #f1f5f9; border-color: #cbd5e1; }
+    </style>
+</head>
+
+<body class="text-slate-800 select-none">
+
+    <div class="h-4 w-full bg-indigo-800 shrink-0 z-50 relative"></div>
+
+    <div id="main-container">
+
+        <!-- SLIDE 1: PORTADA -->
+        <div class="slide active p-10 bg-slate-50">
+            <div class="flex-1 flex flex-col items-center justify-center space-y-8 w-full h-full relative overflow-hidden">
+                <div class="absolute inset-0 opacity-[0.03] z-0 flex items-center justify-center pointer-events-none">
+                    <i data-lucide="sun" class="w-[800px] h-[800px] text-indigo-900"></i>
+                </div>
+                <div class="relative w-40 h-40 flex items-center justify-center z-10">
+                    <i data-lucide="graduation-cap" class="w-full h-full text-indigo-800 opacity-90 absolute"></i>
+                </div>
+                <h1 class="text-7xl font-extrabold tracking-tight text-slate-900 uppercase text-center leading-tight z-10">
+                    Repaso PAES Física
+                </h1>
+                <p class="text-4xl text-slate-500 font-semibold tracking-wide text-center z-10">
+                    La Luz y sus Propiedades Ondulatorias
+                </p>
+                <div class="mt-16 p-8 glass-card border-l-8 border-indigo-800 text-left w-full max-w-5xl flex justify-between items-end z-10 shadow-lg">
+                    <p class="text-4xl font-bold text-slate-900">Prof. Luis Quezada</p>
+                    <p class="text-3xl font-bold text-indigo-800 uppercase tracking-wider">SEK CHILE</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: INTRODUCCIÓN -->
+        <div class="slide bg-white p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="compass" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Introducción</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-10 flex-1 items-stretch">
+                <div class="col-span-6 flex flex-col justify-center space-y-6">
+                    <p class="text-2xl text-slate-700 leading-relaxed font-medium text-justify">
+                        Enfrentarse a la prueba <strong>PAES de Ciencias</strong> no es una competencia de memoria. Es una evaluación de razonamiento científico e inferencia lógica.
+                    </p>
+                    <div class="glass-card p-6 border-l-8 border-indigo-500 shadow-xl bg-slate-50">
+                        <p class="text-2xl text-slate-800 font-extrabold mb-4 flex items-center gap-2">
+                            <i data-lucide="brain-circuit" class="text-indigo-600"></i> El Cambio de Paradigma
+                        </p>
+                        <p class="text-lg text-slate-700 leading-relaxed font-medium text-justify">
+                            En lugar de exigir que memorices fórmulas mecánicamente, la prueba actual evalúa tu capacidad para <strong>vincular variables</strong>, interpretar datos de investigaciones empíricas y <strong>aplicar modelos físicos</strong> abstractos a situaciones del mundo real y cotidiano.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-span-6 glass-card border-4 border-slate-100 overflow-hidden shadow-xl relative w-full h-full bg-slate-900 flex items-center justify-center p-12">
+                    <div class="text-white space-y-8 absolute inset-0 m-auto flex flex-col justify-center px-16">
+                        <div class="flex items-center gap-6 text-emerald-400">
+                            <i data-lucide="crosshair" class="w-12 h-12 shrink-0"></i>
+                            <div>
+                                <p class="text-xl font-bold mb-1 uppercase tracking-wider text-emerald-300">Lectura Científica</p>
+                                <p class="text-slate-300">Comprensión rigurosa de textos y descripciones experimentales.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6 text-emerald-400">
+                            <i data-lucide="bar-chart-2" class="w-12 h-12 shrink-0"></i>
+                            <div>
+                                <p class="text-xl font-bold mb-1 uppercase tracking-wider text-emerald-300">Análisis de Datos</p>
+                                <p class="text-slate-300">Inferencia de resultados cruzando gráficos y tablas paramétricas.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6 text-emerald-400">
+                            <i data-lucide="check-circle" class="w-12 h-12 shrink-0"></i>
+                            <div>
+                                <p class="text-xl font-bold mb-1 uppercase tracking-wider text-emerald-300">Fenomenología</p>
+                                <p class="text-slate-300">Identificación precisa de las interacciones de la luz con la materia.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: ESTRUCTURA DE LA PRUEBA -->
+        <div class="slide bg-slate-50 p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="book-open" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Definiciones</h2>
+            </div>
+            
+            <p class="text-2xl text-slate-700 font-medium mb-8 bg-white p-5 border border-slate-200 rounded-2xl shadow-sm">
+                La prueba electiva PAES Ciencias - Física consta de un total de <strong>80 preguntas</strong> de selección múltiple.
+            </p>
+
+            <div class="grid grid-cols-2 gap-10 flex-1 items-stretch">
+                <!-- Seccion Izquierda -->
+                <div class="glass-card p-8 flex flex-col justify-start border-t-[12px] border-indigo-600 shadow-xl bg-white relative">
+                    <p class="text-3xl font-extrabold text-slate-900 mb-6 text-center">Estructura de Preguntas</p>
+                    <div class="flex flex-col gap-6 w-full">
+                        <div class="bg-indigo-50 border border-indigo-200 p-5 rounded-2xl flex gap-4">
+                            <div class="bg-indigo-600 text-white font-black text-3xl px-6 py-4 rounded-xl flex items-center justify-center shrink-0">54</div>
+                            <div class="flex flex-col justify-center">
+                                <span class="font-bold text-indigo-900 text-xl uppercase tracking-wider">Módulo Común</span>
+                                <span class="text-slate-700 font-medium leading-relaxed">Repartidas equitativamente (18 Biología, 18 Física, 18 Química). Evalúan conocimientos científicos fundacionales y generales.</span>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl flex gap-4">
+                            <div class="bg-emerald-600 text-white font-black text-3xl px-6 py-4 rounded-xl flex items-center justify-center shrink-0">26</div>
+                            <div class="flex flex-col justify-center">
+                                <span class="font-bold text-emerald-900 text-xl uppercase tracking-wider">Módulo Electivo Específico</span>
+                                <span class="text-slate-700 font-medium leading-relaxed">26 preguntas netamente de Física, con un nivel de exigencia lógica superior, orientadas a la resolución de problemas abstractos.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seccion Derecha -->
+                <div class="glass-card p-8 flex flex-col justify-start border-t-[12px] border-rose-500 shadow-xl bg-white relative">
+                    <p class="text-3xl font-extrabold text-slate-900 mb-6 text-center">Área Temática (Oficial): Ondas</p>
+                    <p class="text-lg font-medium text-slate-700 mb-6 text-justify">
+                        En la prueba oficial, <strong>Ondas</strong> agrupa los siguientes conocimientos fundamentales declarados oficialmente por el Mineduc y DEMRE:
+                    </p>
+                    <ul class="space-y-4 text-base text-slate-700 font-medium px-4">
+                        <li class="flex items-start gap-4 border-b border-slate-100 pb-2">
+                            <i data-lucide="radio" class="w-6 h-6 text-rose-500 shrink-0"></i>
+                            <div>
+                                <strong class="text-slate-900">Elementos y Relaciones:</strong> Longitud de onda, frecuencia, período, amplitud. Relación entre ellos y la rapidez de propagación en una onda electromagnética.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4 border-b border-slate-100 pb-2">
+                            <i data-lucide="sun" class="w-6 h-6 text-rose-500 shrink-0"></i>
+                            <div>
+                                <strong class="text-slate-900">Fenómenos y Espectro:</strong> Absorción, reflexión, refracción, difracción, interferencia y efecto Doppler cualitativo. Formación de colores, dispersión y propagación rectilínea.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <i data-lucide="zap" class="w-6 h-6 text-rose-500 shrink-0"></i>
+                            <div>
+                                <strong class="text-slate-900">Tecnología y Óptica:</strong> Espejos planos/esféricos, lentes. Funcionamiento de dispositivos: radar, prismáticos, comunicación inalámbrica, televisor, láser, fibra óptica, etc.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: HABILIDADES DEMRE -->
+        <div class="slide bg-slate-50 p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="book-open" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Definiciones</h2>
+            </div>
+            
+            <p class="text-2xl text-slate-700 font-medium mb-8 bg-white p-5 border border-slate-200 rounded-2xl shadow-sm">
+                En conjunto con el área temática, cruzan y evalúan una <strong>Habilidad Científica</strong> transversal. Estas son las 5 habilidades oficiales exigidas en evaluación:
+            </p>
+
+            <div class="grid grid-cols-3 gap-6 flex-1 items-stretch">
+                <!-- Card 1 -->
+                <div class="glass-card p-6 flex flex-col justify-start border-t-8 border-blue-500 shadow-md bg-white">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="bg-blue-100 p-2 rounded-full"><i data-lucide="scan" class="w-6 h-6 text-blue-600"></i></div>
+                        <p class="text-lg font-bold text-slate-900 leading-tight">Procesar y analizar</p>
+                    </div>
+                    <p class="text-sm text-slate-600 font-medium leading-relaxed text-justify">
+                        Identificar relaciones, patrones o tendencias empíricas y predecir resultados lógicos. <strong class="text-blue-700">(Relacionar causa y efecto)</strong>.
+                    </p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-card p-6 flex flex-col justify-start border-t-8 border-emerald-500 shadow-md bg-white">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="bg-emerald-100 p-2 rounded-full"><i data-lucide="network" class="w-6 h-6 text-emerald-600"></i></div>
+                        <p class="text-lg font-bold text-slate-900 leading-tight">Planificar e Investigar</p>
+                    </div>
+                    <p class="text-sm text-slate-600 font-medium leading-relaxed text-justify">
+                        Identificar el marco conceptual, <strong class="text-emerald-700">el objetivo de estudio o variables</strong> dentro del proceder experimental.
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-card p-6 flex flex-col justify-start border-t-8 border-amber-500 shadow-md bg-white">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="bg-amber-100 p-2 rounded-full"><i data-lucide="test-tube-2" class="w-6 h-6 text-amber-600"></i></div>
+                        <p class="text-lg font-bold text-slate-900 leading-tight">Evaluar (Cuestionar)</p>
+                    </div>
+                    <p class="text-sm text-slate-600 font-medium leading-relaxed text-justify">
+                        Analizar la validez, alcance o confiabilidad analítica de un diseño científico. (<strong class="text-amber-700">Determinar exactitud de modelo</strong>).
+                    </p>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-card p-6 flex flex-col justify-start border-t-8 border-violet-500 shadow-md bg-white">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="bg-violet-100 p-2 rounded-full"><i data-lucide="eye" class="w-6 h-6 text-violet-600"></i></div>
+                        <p class="text-lg font-bold text-slate-900 leading-tight">Observar y Plantear</p>
+                    </div>
+                    <p class="text-sm text-slate-600 font-medium leading-relaxed text-justify">
+                        Formular una interrogante rigurosa o <strong class="text-violet-700">hipótesis testeable</strong> extraída de un evento dado empíricamente.
+                    </p>
+                </div>
+                <!-- Card 5 -->
+                <div class="glass-card p-6 flex flex-col justify-start border-t-8 border-orange-500 shadow-md bg-white">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="bg-orange-100 p-2 rounded-full"><i data-lucide="message-square" class="w-6 h-6 text-orange-600"></i></div>
+                        <p class="text-lg font-bold text-slate-900 leading-tight">Comunicar Evidencia</p>
+                    </div>
+                    <p class="text-sm text-slate-600 font-medium leading-relaxed text-justify">
+                        Uso del lenguaje científico expresando evidencias estructuradas en formatos como <strong class="text-orange-700">gráficos, esquemas o tablas</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: EJEMPLO -->
+        <div class="slide bg-white p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="lightbulb" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Ejemplo</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-stretch relative">
+                <!-- Enunciado Ejemplo -->
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-slate-50 border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative shrink-0">
+                        <p class="text-xl font-bold text-indigo-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i data-lucide="award"></i> Demostración Guiada
+                        </p>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify mb-4">
+                            En un laboratorio de óptica, un haz de luz láser monocromático entra desde aire etéreo hacia un masivo bloque rígido de cuarzo transparente. Un perito constata que, al ocurrir el paso profundo al nuevo medio, la dirección de viaje de la onda se halla fuertemente flectada angularmente respecto a su recta primaria de origen.
+                        </p>
+                        <p class="text-2xl font-bold text-slate-900 border-t-2 border-slate-200 pt-4 mt-2">
+                            A nivel puramente conceptual, ¿a qué fenómeno ondulatorio de la luz hace eco incuestionable este cambio y quiebre en la trayectoria general documentada?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">A) Efecto de Interferencia Constructiva.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">B) Dispersión Total Cromática del Vacío.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer" id="correct-ej">C) Quiebre por Refracción Snelliana o Geométrica.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">D) Propiedad mecánica de Reflexión en barrera.</p>
+                    </div>
+                </div>
+
+                <!-- Solucion Ejemplo -->
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[30rem]">
+                    <button id="btn-reveal-ej" onclick="revelarSolucion('ej')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-slate-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="microscope" class="w-10 h-10"></i> Ejecutar Muestra Magistral (Desglose)
+                    </button>
+
+                    <div id="respuesta-ej" class="hidden fade-in absolute inset-0 w-full h-full bg-white p-8 rounded-3xl border-4 border-indigo-300 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-indigo-800 text-2xl font-extrabold border-b-4 border-indigo-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="flask-conical" class="w-8 h-8"></i> Decodificación del Problema
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-5 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner flex items-center gap-4">
+                                <div class="flex-1">
+                                    <span class="font-bold text-indigo-800 block mb-1 uppercase text-sm tracking-widest">Eje: Ondas | Habilidad: Reconocer</span>
+                                    <span class="text-justify block">Para vencer en PAES debemos descartar "ruido textual" distractor (por ej. *laboratorio, perito, cuarzo*) y extraer el parámetro lógico elemental del relato descriptivo que la prueba te demanda identificar conceptualmente.</span>
+                                </div>
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="uppercase text-sm tracking-widest text-emerald-700 block mb-1">Análisis Causal Directo</span>
+                                <ol class="list-decimal pl-6 space-y-2 mt-3 text-justify">
+                                    <li><strong>Extracción Pura:</strong> Existe un avance efectivo de ondas mediando un <em>cambio real de un medio transparente a otro distinto (Aire a Vidrio)</em>, y el efecto general es una "flexión" de lo recto.</li>
+                                    <li><strong>Descarte de Engaños (D):</strong> La Ley de Reflexión exige rebote firme (no cruzar), de modo que si entró al medio macizo, queda totalmente invalidado considerarlo reflexión.</li>
+                                    <li><strong>Identificación Fenomenológica:</strong> Como postulado general, el ingreso o traspaso molecular a sustancias restrictivas implica frenado en la rapidez y una angulación refractada general y medible en el vector rector. El nombre formal de esto es estrictamente <strong>Refracción</strong> (Alternativa C).</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 1 -->
+        <div class="slide bg-slate-50 p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <!-- Enunciado y Alternativas -->
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-white border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">1</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            Un rayo de luz viaja desde el vacío hacia el interior de un medio material transparente de mayor densidad. Si se sabe que la rapidez de propagación de la luz disminuye al ingresar a este nuevo medio, ¿cuál de las siguientes propiedades de la luz <strong>se mantiene constante</strong>?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">A) Su rapidez de propagación transversal.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">B) Su longitud de onda.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer" id="correct-p1">C) Su frecuencia.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">D) Su dirección de propagación.</p>
+                    </div>
+                </div>
+
+                <!-- Solución -->
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p1" onclick="revelarSolucion('p1')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p1" class="hidden fade-in absolute inset-0 w-full h-full bg-white p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Elementos y Relaciones) — Procesar y analizar la evidencia.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                Al ocurrir el fenómeno ondulatorio de la refracción (cambio geométrico de medio transparente), la fuente que emitió la onda nunca se ve perturbada. Por lo tanto, la <strong>frecuencia</strong> (número de ciclos por segundo) se mantiene inalterable. Lo único que se encoge o varía es la rapidez de fase y, en consecuencia directa, su longitud de onda.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 2 -->
+        <div class="slide bg-white p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <!-- Enunciado y Alternativas -->
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-slate-50 border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">2</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            Dos fuentes láser, una emitiendo radiación verde (luz visible) y la otra emitiendo radiación infrarroja, disparan un pulso lumínico hacia el vacío profundo de forma simultánea. Al respecto de su propagación en el espacio, ¿cuál de las siguientes inferencias es correcta?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">A) El pulso verde viaja a mayor rapidez porque posee mayor frecuencia energética.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">B) El pulso infrarrojo viaja a mayor rapidez por poseer una superior longitud de onda.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer" id="correct-p2">C) Ambos pulsos viajan exactamente a la misma rapidez de propagación.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">D) Su rapidez es variable e impredecible dependiendo del instrumento receptor.</p>
+                    </div>
+                </div>
+
+                <!-- Solución -->
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p2" onclick="revelarSolucion('p2')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p2" class="hidden fade-in absolute inset-0 w-full h-full bg-slate-50 p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Espectro Electromagnético) — Evaluar.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                Independientemente de cuán alta sea su frecuencia (verde) o baja su energía (infrarrojo), la base teórica del espectro electromagnético afirma dictatorialmente que <strong>todas</strong> las ondas electromagnéticas puras viajan exactamente a la misma rapidez en el vacío universal (la constante $c$, aprox. $300.000\text{ km/s}$).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 3 -->
+        <div class="slide bg-slate-50 p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <!-- Enunciado y Alternativas -->
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-white border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">3</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            Durante un experimento visual, un panel es iluminado con luz blanca del sol, mostrando un claro color azul a los ojos de los observadores. Luego se cierra la sala y se ilumina el panel únicamente con un haz puro de luz monocromática roja. ¿Qué color aproximado tenderá a percibirse del panel bajo estas nuevas condiciones y a qué se debe?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-4 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">A) Violeta, debido a la interferencia cromática constructiva de ambas ondas.</p>
+                        <p class="p-4 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer" id="correct-p3">B) Negro oscuro, debido a que el panel absorbe la luz roja y no tiene luz azul para reflejar.</p>
+                        <p class="p-4 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">C) Rojo, porque el panel ahora refleja la luz predominante del ambiente al incidir sobre su límite.</p>
+                        <p class="p-4 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">D) Azul, porque el color o pigmento intrínseco del material prevalece y no se altera en ninguna condición.</p>
+                    </div>
+                </div>
+
+                <!-- Solución -->
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p3" onclick="revelarSolucion('p3')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p3" class="hidden fade-in absolute inset-0 w-full h-full bg-white p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Formación de colores) — Procesar y analizar la evidencia.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                El color de un objeto es un fenómeno de interacción química que permite absorber ciertas ondas y reflejar una que sobrevive o "rebota". El panel "azul" está predispuesto químicamente a tragar rojos/amarillos/verdes, y a rebotar/reflejar el azul. Si solo lo iluminas con rojo puro, se tragará este rojo, y al carecer de su onda azul favorita para empujar visualmente de vuelta, no rebotará nada al ojo. Al no haber rebote luminoso, percibimos Oscuridad o color negro.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 4 -->
+        <div class="slide bg-white p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <!-- Enunciado y Alternativas -->
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-slate-50 border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">4</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            Un investigador emite un pulso de luz desde el interior de un tanque con un líquido transparente (índice de refracción alto) en dirección oblicua hacia el aire de la sala (índice de refracción menor). De acuerdo con las propiedades de transmisión de ondas, ¿qué le sucederá al rayo de luz al ingresar al aire?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer" id="correct-p4">A) Aumentará su rapidez de propagación y su ángulo respecto a la normal será mayor.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">B) Disminuirá su longitud de onda tendiendo a acercarse a la recta normal.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">C) Mantendrá la misma trayectoria angular pero aumentará su frecuencia visible.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">D) Sufrirá una difracción perfecta, abriéndose paralelamente sobre toda la superficie.</p>
+                    </div>
+                </div>
+
+                <!-- Solución -->
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p4" onclick="revelarSolucion('p4')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p4" class="hidden fade-in absolute inset-0 w-full h-full bg-slate-50 p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Fenómenos Ondulatorios) — Procesar y analizar la evidencia.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                El "Índice de Refracción" es analógicamente el grado de dificultad u obstáculo del medio óptico. Entrar desde un líquido denso hacia el aire significa salir a un medio de gran libertar restrictiva. La onda inmediatamente experimenta una "aceleración" en su rapidez de fase. Este aumento de rapidez arrastra el frente de ondas de tal manera que el avance transmitido se abre y se <strong>aleja bruscamente de la recta perpendicular Normal</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 5 -->
+        <div class="slide bg-slate-50 p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <!-- Enunciado y Alternativas -->
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-white border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">5</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            En un experimento, se interpone un objeto opaco muy delgado frente a una fuente de luz blanca puntual. Al observar la sombra proyectada en la pared detrás, se nota que los bordes del objeto no son sombras nítidas rectas, sino que el área oscura presenta ligeras intrusiones de luz desdibujadas y rodeos lumínicos difusos. ¿A qué fenómeno electromagnético corresponde esta observación?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer" id="correct-p5">A) De difracción en sus bordes.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">B) De refracción y consecuente enfoque de lentes.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">C) De dispersión cromática atmosférica.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">D) De interferencia destructiva del objeto.</p>
+                    </div>
+                </div>
+
+                <!-- Solución -->
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p5" onclick="revelarSolucion('p5')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p5" class="hidden fade-in absolute inset-0 w-full h-full bg-white p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Fenómenos Ondulatorios) — Evaluar.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                Que existan intrusiones lumínicas en una zona de sombra "imposible" a espaldas del muro o del objeto evidencia que la luz logra "rodear" en curva física los perímetros y esquinas finas de los obstáculos. A este fenómeno general ondulatorio, que permite contornear y saltarse los rebotes bloqueadores de obstáculos sólidos en el trayecto, se le denomina taxativamente <strong>Difracción</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 6 -->
+        <div class="slide bg-slate-50 p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-white border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">6</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            Al incidir un haz de luz blanca sobre un prisma de vidrio transparente, se observa que del lado opuesto emerge un patrón de distintos colores, conocido como espectro, en diferentes ángulos de salida. ¿A qué se debe principalmente la separación y formación de estos colores en el interior del prisma?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer" id="correct-p6">A) A que cada color posee un índice de refracción particular que varía levemente su rapidez dentro del cristal.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">B) A que el vidrio repele las ondas infrarrojas obligando a la luz visible a crear difracción.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">C) A la colisión destructiva conocida como "reflexión interna total" en las paredes del prisma de vidrio macizo.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">D) A que el cristal aporta nuevos fotones ultravioletas a la luz neutra cambiándole su tonalidad.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p6" onclick="revelarSolucion('p6')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p6" class="hidden fade-in absolute inset-0 w-full h-full bg-white p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Formación de colores y dispersión) — Procesar y analizar la evidencia.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                La formación del arcoíris a través de un prisma prismático (Dispersión Cromática) se explica debido a que el material refracta cada color del rayo blanco con una levísima variación. La luz violeta se ralentiza más que la luz roja al chocar con el cristal, forzando a que la violeta modifique su ángulo de manera más acentuada que el rojo. Al emerger, las componentes ya están desalineadas y separadas ópticamente.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 7 -->
+        <div class="slide bg-white p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-slate-50 border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">7</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            En un laboratorio de óptica colegial, un grupo de estudiantes hace incidir un conjunto de tres haces paralelos de luz láser brillante sobre un arreglo predeterminado de lentes convergentes. Observan cuidadosamente cómo el haz general se refracta cruzándose varias veces. Respecto de esta actividad, ¿cuál de las siguientes opciones señala el objetivo de investigación fundamental y válido que se persigue someter a prueba a través de este montaje estructural?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">A) Observar sin mediciones cómo se iluminan las lentes al recibir cualquier tipo de rayo y conjeturar su uso recreativo.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer" id="correct-p7">B) Determinar de forma empírica y estructurada de qué forma se modifica el foco final originado si se cambia experimentalmente el tipo o de grosor del lente.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">C) Cuestionar que los láseres provengan en la naturaleza en estado de haces luminosos infinitamente paralelos como es comúnmente planteado.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">D) Probar estadísticamente que cualquier material cristalino absorbe los colores oscuros más rápidos que los componentes claros neutros.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p7" onclick="revelarSolucion('p7')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p7" class="hidden fade-in absolute inset-0 w-full h-full bg-slate-50 p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Tecnología Óptica) — Planificar y conducir una investigación.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                Planificar una investigación rigurosa conecta incondicionalmente un simple procedimiento exploratorio físico o montaje de piezas con una manipulación medible de estudio de alto campo. Establecer como prioridad de trabajo el investigar la variable medible (como modificar el calibre grosor de la lente o número de ellas) afectará o modelará a una segunda variable (el foco de concentración lumínica) lo que estructura cabalmente un razonamiento formal clásico experimental escolar de campo.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 8 -->
+        <div class="slide bg-slate-50 p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-white border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">8</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            En un grupo se hace pasar una luz blanca hacia una familia de prismas físicos de dimensiones homólogas, pero construidas de distinto tipo de cuerpo: uno es de acrílico transparente absoluto, otro translúcido opaco tono verde, y un tercero grueso teñido en rojo. Se ubica meticulosamente una pantalla general estancada a distancia paralela detrás y observan seriamente las proyecciones manchadas. De las declaraciones mostradas, ¿cuál corresponde genuina y lógicamente a una hipótesis central que resulta posible someter al campo de prueba empleando los sencillos materiales indicados del ensayo escolar de la clase?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">A) Que el estado transparente del material siempre aumenta la velocidad termodinámica del fotón luminoso frente al resto del clima general.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">B) Que si distanciáramos el muro de tela a cuatro metros el prisma rojo explotaría y emitiría destello térmico azulino generalizado.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer" id="correct-p8">C) Que el material y grado de tonalidad del matraz o prisma influye selectivamente en cuáles gamas cromáticas logra dejar transmitirse al otro extremo final de la pared.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">D) Que todos los materiales en su profunda incepción estructural repelen eternamente y anulan matemáticamente un cruce magnético sin importar sus condiciones químicas.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p8" onclick="revelarSolucion('p8')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p8" class="hidden fade-in absolute inset-0 w-full h-full bg-white p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Trasmisión Eléctromagnetica) — Observar y plantear preguntas.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                Este problema erradica la dependencia teórica rígida pura estimulando la generación de inferencias empíricas y científicas formales. Frente a una variable estructural alterada como es el caso de manipular voluntariamente cubos de "cristal coloreado u transparente", plantear cuestionamientos estructurados alza el estudio sobre si este color o naturaleza intrínseca obstaculizadora o translúcida afecta en selectividad de color de pase de la luz general para chocar en un muro externo paralelo. Constituye una hipótesis completamente observable, clara de validar y simple de formalizar.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 9 -->
+        <div class="slide bg-white p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-slate-50 border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">9</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            Al exponer al sol durante un día caluroso un objeto automóvil pintado de blanco puro y otro idéntico pintado de negro mate, se percibe posteriormente al tacto que el auto negro alcanza una temperatura muy superior a su contraparte. Considerando exclusivamente las interacciones del espectro de luz visible con la materia, ¿cómo se justifica ondulatoriamente este diferencial de retención de temperatura?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">A) El automóvil blanco experimenta mayor difracción de frecuencias cálidas circundantes que el material oscuro, enfriándose eficientemente.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer" id="correct-p9">B) El auto negro tiene un calentamiento superior porque absorbe físicamente casi todo el espectro de luz visible, incrementando su energía térmica.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">C) Ambos logran reflejar por igual la radiación, pero el negro atrae artificialmente ondas del rango de las microondas.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-slate-50 opt-hover cursor-pointer">D) El color oscuro experimenta constantemente interferencia destructiva de calor rebotado hacia el exterior.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p9" onclick="revelarSolucion('p9')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p9" class="hidden fade-in absolute inset-0 w-full h-full bg-slate-50 p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Tecnología y Óptica / Calor) — Evaluar.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                El fenómeno de la coloración es un proceso de "absorción/reflexión" de onda energética. El modelo blanco puro refleja la inmensa mayoría de cuotas energéticas. Traga escasamente una fracción del rayo. A la inversa, el modelo negro mate absorbe frenéticamente casi todos los colores de la luz visible, lo cual termodinámicamente se transforma en mayor vibración de sus partículas, derivando en un aumento medible de su temperatura.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREGUNTA 10 -->
+        <div class="slide bg-slate-50 p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="help-circle" class="w-14 h-14 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+            </div>
+            
+            <div class="grid grid-cols-12 gap-12 flex-1 items-start relative h-full">
+                <div class="col-span-6 flex flex-col space-y-6 h-full justify-start">
+                    <div class="p-8 bg-white border-2 border-slate-200 rounded-3xl shadow-sm flex flex-col relative mt-4 shrink-0">
+                        <span class="absolute -top-6 -left-6 bg-indigo-600 text-white w-14 h-14 flex items-center justify-center rounded-full font-bold text-2xl shadow-md border-4 border-white">10</span>
+                        <p class="text-2xl font-medium text-slate-800 leading-relaxed text-justify">
+                            En una exposición escolar, se le solicita a un grupo de estudiantes comunicar el marco estructural fundamental del Espectro Electromagnético general relacionando la vinculación explícita de sus frecuencias y sus longitudes físicas de banda transversal para ondas comunes, como los potentes Rayos Gamma letales y las lejanas y calmas Ondas de Radio libres. De las opciones expuestas para diagramar gráficamente los ejes o presentarlo expuesto, ¿cuál representa empírica e irrefutablemente el modelo estricto de la evidencia?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 text-xl font-bold text-slate-600 flex-1 flex flex-col justify-end font-sans">
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">A) Representar un gráfico circular donde a mayor salto numérico en la frecuencia de ondas de energía en microondas, estas crezcan de tamaño absoluto a pasos equivalentes simétricos hacia la cúspide azul visible de su onda estática.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">B) Trazar diagramas simples donde todas las ondas desde Radio civil hasta letales Rayos X constaten en infografía ser copias puras y fácticas tanto en velocidad vacía como en igualdad exacta de medida o longitud formal.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer" id="correct-p10">C) Exponer un sencillo y formal esquema el cual clasifique ordenadamente la evidencia demostrando que, a medida que nos trasladamos comparativamente desde las lejanas Radios masivas hasta el destructivo Rayo Gamma denso, la magnitud estricta de la frecuencia aumenta implacablemente mientras reduce progresiva y drásticamente su respectiva longitud o tamaño espacial de trazo.</p>
+                        <p class="p-5 rounded-2xl border-2 border-slate-200 shadow-sm bg-white opt-hover cursor-pointer">D) Construir una lámina visual donde se explique que todo trazo rojo brillante disminuya bruscamente de frecuencia pero mantenga atada en candado la de longitud métrica pura.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-6 relative w-full h-full flex flex-col justify-center min-h-[26rem]">
+                    <button id="btn-reveal-p10" onclick="revelarSolucion('p10')"
+                        class="absolute inset-0 m-auto h-max px-8 py-6 bg-indigo-900 text-white rounded-2xl text-2xl font-extrabold hover:bg-indigo-800 transition-all shadow-xl flex items-center justify-center gap-4 hover:scale-105 active:scale-95 border-4 border-indigo-200 z-20">
+                        <i data-lucide="shield-check" class="w-10 h-10"></i> Verificar Análisis Lógico
+                    </button>
+
+                    <div id="respuesta-p10" class="hidden fade-in absolute inset-0 w-full h-full bg-white p-8 rounded-3xl border-4 border-emerald-500 flex-col justify-start text-left shadow-2xl z-10 overflow-y-auto">
+                        <p class="text-emerald-700 text-2xl font-extrabold border-b-4 border-emerald-100 pb-4 mb-6 uppercase tracking-widest flex items-center gap-3 shrink-0">
+                            <i data-lucide="check-circle" class="w-8 h-8"></i> Deducción Correcta
+                        </p>
+
+                        <div class="text-lg text-slate-800 space-y-4 font-medium tracking-wide">
+                            <div class="bg-indigo-50 p-4 border-l-8 border-indigo-500 rounded-r-xl shadow-inner">
+                                <span class="font-bold text-indigo-900 block mb-1">Área y Habilidad:</span> Ondas (Espectro Electromagnético) — Comunicar.
+                            </div>
+                            <div class="bg-emerald-50 p-4 border-l-8 border-emerald-500 rounded-r-xl shadow-inner font-bold text-emerald-900">
+                                <span class="text-emerald-700 block mb-1">Síntesis Analítica:</span>
+                                Saber <strong>comunicar</strong> en física implica extraer, ordenar, modelar o plasmar enunciados o leyes válidas y verificables de manera libre de fallas, sesgos o inconsistencias gráficas. Existe históricamente en ciencia fundamental un axioma matemático que norma la luz del vacío: su frecuencia y respectiva longitud de la onda se relacionan y operan estrictamente bajo un lazo o dependencia <strong>inversamente</strong> general. Una alta exigencia repetitiva en el salto (Frecuencia potente Gamma) recorta minúsculamente el horizonte estático métrico de todo salto (menor Longitud o tamaño espacial de propagación por tramo). 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TICKET DE SALIDA -->
+        <div class="slide bg-white p-10 pb-32">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="check-square" class="w-14 h-14 text-emerald-600"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Ticket de salida</h2>
+            </div>
+            
+            <div class="flex-1 flex flex-col items-center justify-center p-12">
+                <div class="glass-card shadow-2xl border-t-[16px] border-emerald-500 rounded-3xl w-full max-w-4xl p-12 text-center relative overflow-hidden bg-white">
+                    <div class="absolute -top-10 -right-10 opacity-10">
+                        <i data-lucide="lightbulb" class="w-64 h-64 text-emerald-500"></i>
+                    </div>
+                    <p class="text-3xl font-extrabold text-slate-900 mb-8 z-10 relative">¿Qué aprendimos sobre la PAES de Ciencias (Física)?</p>
+                    
+                    <p class="text-2xl text-slate-600 leading-relaxed font-medium z-10 relative text-justify">
+                        En esta clase repasamos exhaustivamente los conceptos fundamentales del <strong>Eje de Ondas</strong> con énfasis en la luz electromagnética. Entendimos la trascendencia de fenómenos ondulatorios reales como la Reflexión, Refracción, Difracción, Interferencia y Dispersión de múltiples ambientes. Conjuntamente pusimos en dura práctica de las cinco <strong>Habilidades Científicas</strong> evaluables oficialmente que marcan a una mente verdaderamente hábil. Para el éxito de cara a una prueba superior y seria no basta nunca la simple mención teórica o rígida repetitiva. Requieres el saber investigar, evaluar el marco observable real, y el comunicar asertivamente este contexto vital sin ser arrastrado o cegado por su distractor entorno visual perimetral.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="h-24 w-full shrink-0 flex justify-between items-center px-12 bg-white border-t-2 border-slate-200 fixed bottom-0 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div class="text-slate-400 font-extrabold text-2xl tracking-widest uppercase truncate max-w-[60%] flex gap-4 items-center">
+            <span class="text-indigo-800">Repaso PAES</span>
+            <span class="text-slate-300">|</span>
+            <span>Unidad: Luz y Ondas</span>
+        </div>
+        <div class="flex gap-6">
+            <button onclick="changeSlide(-1)" class="p-5 rounded-full bg-slate-50 border-2 border-slate-200 shadow-sm hover:bg-slate-200 hover:border-slate-300 transition-all cursor-pointer focus:outline-none text-slate-600">
+                <i data-lucide="chevron-left" class="w-10 h-10"></i>
+            </button>
+            <button onclick="changeSlide(1)" class="p-5 rounded-full bg-indigo-900 text-white shadow-md hover:bg-indigo-800 hover:shadow-lg transition-all cursor-pointer focus:outline-none transform hover:scale-105 active:scale-95 border-2 border-indigo-900">
+                <i data-lucide="chevron-right" class="w-10 h-10"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function updateSlide() {
+            slides.forEach((s, i) => {
+                s.classList.remove('active');
+                if (i === currentSlide) {
+                    s.classList.add('active');
+                    s.scrollTop = 0;
+                }
+            });
+        }
+
+        function changeSlide(d) {
+            const n = currentSlide + d;
+            if (n >= 0 && n < slides.length) {
+                currentSlide = n;
+                updateSlide();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (['Space', 'Enter'].includes(e.code) && document.activeElement.tagName !== 'BUTTON') {
+                e.preventDefault();
+            }
+        });
+
+        function revelarSolucion(idBase) {
+            const btn = document.getElementById('btn-reveal-' + idBase);
+            const target = document.getElementById('respuesta-' + idBase);
+
+            if(btn) btn.style.display = 'none';
+            
+            setTimeout(() => {
+                if(target) {
+                    target.classList.remove('hidden');
+                    target.classList.add('flex', 'visible');
+                }
+            }, 50);
+
+            const correctOpt = document.getElementById('correct-' + idBase);
+            if (correctOpt) {
+                correctOpt.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900', 'shadow-md');
+                correctOpt.classList.remove('border-slate-200', 'bg-white', 'bg-slate-50', 'opt-hover');
+            }
+
+            if (window.MathJax) {
+                try { MathJax.typesetPromise([target]).catch(e => console.log(e)); } catch (e) {}
+            }
+        }
+    </script>
+</body>
+
+</html>
