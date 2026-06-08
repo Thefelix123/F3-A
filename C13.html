@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espejos Convexos - IIIº Medio F3</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            startup: { typeset: true }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; background-color: #f8fafc; }
+        #slide-container { height: calc(100vh - 5rem); width: 100vw; position: relative; }
+
+        .slide {
+            display: none; height: 100%; width: 100%; flex-direction: column;
+            overflow-y: auto; overflow-x: hidden; padding-bottom: 10rem; scroll-behavior: smooth;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .slide.active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-q {
+            0%, 100% { transform: scale(1); opacity: 0.85; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+        .pulse-q { transform-origin: center; transform-box: fill-box; animation: pulse-q 1.8s ease-in-out infinite; }
+
+        .glass-card { background: rgba(255, 255, 255, 0.98); border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+
+        ::-webkit-scrollbar { width: 14px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 8px; margin: 10px 0; }
+        ::-webkit-scrollbar-thumb { background: #4338ca; border-radius: 8px; border: 3px solid #e2e8f0; }
+
+        .paso-ejemplo { opacity: 0; transform: translateY(20px); transition: all 0.5s ease-out; }
+        .paso-ejemplo.visible { opacity: 1; transform: translateY(0); }
+
+        .ray-anim { opacity: 0; transition: opacity 0.7s ease-out; }
+        .ray-anim.visible { opacity: 1; }
+
+        .intuition { opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.6s ease-out, max-height 0.7s ease-out; }
+        .intuition.show { opacity: 1; max-height: 400px; }
+
+        .problema-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .problema-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+    </style>
+</head>
+
+<body class="text-slate-800 select-none flex flex-col">
+
+    <div class="h-4 w-full bg-indigo-800 shrink-0 fixed top-0 z-50"></div>
+
+    <div id="slide-container" class="mt-4">
+
+        <!-- ====================================================== -->
+        <!-- 1. PORTADA                                              -->
+        <!-- ====================================================== -->
+        <div class="slide active p-10 bg-slate-50">
+            <div class="flex-1 flex flex-col items-center justify-center space-y-8 w-full h-full min-h-[500px]">
+                <div class="bg-indigo-100 p-8 rounded-full shadow-inner border-4 border-white">
+                    <i data-lucide="aperture" class="w-32 h-32 text-indigo-800"></i>
+                </div>
+                <h1 class="text-7xl font-extrabold tracking-tight text-slate-900 uppercase text-center">
+                    Espejos Convexos
+                </h1>
+                <p class="text-4xl text-slate-600 font-semibold tracking-wide text-center max-w-3xl leading-snug">
+                    Imagen Virtual, Derecha y Reducida
+                </p>
+
+                <div class="mt-16 p-8 glass-card rounded-2xl border-l-8 border-indigo-800 text-left w-full max-w-5xl flex justify-between items-end shadow-md">
+                    <div>
+                        <p class="text-xl font-bold text-slate-500 uppercase tracking-widest mb-1">Profesor</p>
+                        <p class="text-4xl font-bold text-slate-900">Luis Quezada</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-3xl font-bold text-indigo-800 uppercase tracking-wider">SEK CHILE • IIIº F3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 2. INTRODUCCIÓN — Misterio progresivo                   -->
+        <!-- ====================================================== -->
+        <div class="slide bg-white p-10">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="car" class="w-12 h-12 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Introducción</h2>
+            </div>
+
+            <div class="grid grid-cols-12 gap-10 flex-1 items-center">
+
+                <div class="col-span-12 lg:col-span-6 flex flex-col gap-6">
+                    <p class="text-3xl text-slate-700 leading-relaxed font-medium">
+                        En cada retrovisor de automóvil aparece la advertencia: <em class="text-indigo-800">"los objetos están más cerca de lo que parecen"</em>.
+                    </p>
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border-l-8 border-slate-700 shadow-sm">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i data-lucide="help-circle" class="w-7 h-7 text-slate-700"></i>
+                            <p class="text-xl font-bold uppercase tracking-wide text-slate-900">La pregunta</p>
+                        </div>
+                        <p class="text-lg text-slate-700 font-medium leading-relaxed">
+                            ¿Por qué un automóvil que vemos pequeño en el retrovisor está en realidad mucho más cerca? ¿Qué tipo de espejo distorsiona el tamaño de manera predecible y por qué se usa precisamente ese?
+                        </p>
+                    </div>
+
+                    <div id="intuicion" class="intuition bg-indigo-50 p-6 rounded-2xl border-l-8 border-indigo-700 shadow-sm">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i data-lucide="lightbulb" class="w-7 h-7 text-indigo-800"></i>
+                            <p class="text-xl font-bold uppercase tracking-wide text-indigo-900">Conclusión</p>
+                        </div>
+                        <p class="text-lg text-slate-700 font-medium leading-relaxed">
+                            El espejo convexo siempre forma una imagen <strong>virtual, derecha y reducida</strong>. Esta reducción amplía el campo visual: el conductor ve más espacio aunque a costa de subestimar la distancia real.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-span-12 lg:col-span-6 bg-slate-900 rounded-3xl p-6 flex flex-col items-center justify-between h-[540px] shadow-xl">
+                    <p class="text-indigo-300 font-bold uppercase tracking-widest text-sm">Construcción interactiva</p>
+
+                    <svg viewBox="0 0 560 360" class="w-full max-h-[380px]">
+                        <!-- Eje óptico -->
+                        <line x1="20" y1="200" x2="540" y2="200" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+                        <!-- Espejo convexo: superficie reflectora hacia la izquierda (forma "(") -->
+                        <!-- vértice V(242,200) · F y C virtuales detrás · centro geométrico (482,200) radio 240 -->
+                        <path d="M 287 60 A 240 240 0 0 0 287 340" fill="none" stroke="#67e8f9" stroke-width="5"/>
+                        <!-- Hatching del lado posterior (derecho, no reflectante) -->
+                        <g stroke="#67e8f9" stroke-width="1.5" opacity="0.55">
+                            <line x1="280" y1="70" x2="295" y2="66"/>
+                            <line x1="260" y1="110" x2="275" y2="107"/>
+                            <line x1="247" y1="150" x2="262" y2="148"/>
+                            <line x1="242" y1="200" x2="257" y2="200"/>
+                            <line x1="247" y1="250" x2="262" y2="252"/>
+                            <line x1="260" y1="290" x2="275" y2="293"/>
+                            <line x1="280" y1="330" x2="295" y2="334"/>
+                        </g>
+
+                        <!-- V vértice (sobre el espejo, lado izquierdo del arco) -->
+                        <circle cx="242" cy="200" r="4" fill="#facc15"/>
+                        <text x="242" y="225" fill="#fde68a" font-size="11" font-weight="bold" text-anchor="middle">V</text>
+
+                        <!-- F virtual detrás del espejo -->
+                        <circle cx="362" cy="200" r="4" fill="#10b981" opacity="0.85"/>
+                        <text x="362" y="225" fill="#6ee7b7" font-size="11" font-weight="bold" text-anchor="middle">F</text>
+                        <text x="362" y="240" fill="#10b981" font-size="9" text-anchor="middle">(virtual)</text>
+
+                        <!-- C virtual detrás -->
+                        <circle cx="482" cy="200" r="4" fill="#f472b6" opacity="0.85"/>
+                        <text x="482" y="225" fill="#fbcfe8" font-size="11" font-weight="bold" text-anchor="middle">C</text>
+
+                        <!-- OBJETO -->
+                        <line x1="80" y1="200" x2="80" y2="130" stroke="#facc15" stroke-width="5" stroke-linecap="round"/>
+                        <polygon points="80,120 72,138 88,138" fill="#facc15"/>
+                        <text x="80" y="175" fill="#fde68a" font-size="11" font-weight="bold" text-anchor="middle">Obj</text>
+
+                        <!-- INTERROGACIÓN inicial detrás del espejo -->
+                        <g id="signo-pregunta">
+                            <text x="310" y="170" fill="#64748b" font-size="64" font-weight="800" text-anchor="middle" class="pulse-q">?</text>
+                        </g>
+
+                        <!-- PASO 1: rayo paralelo -->
+                        <g id="paso-rayo1" class="ray-anim">
+                            <path d="M 80 130 L 252 130" fill="none" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrY)"/>
+                            <!-- Reflejado: diverge alejándose del eje (arriba-izquierda); su prolongación pasa por F virtual -->
+                            <path d="M 252 130 L 90 28" fill="none" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrY)"/>
+                            <!-- Prolongación virtual hacia F -->
+                            <path d="M 252 130 L 362 200" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>
+                        </g>
+
+                        <!-- PASO 2: rayo apuntando a F virtual -->
+                        <g id="paso-rayo2" class="ray-anim">
+                            <!-- Incidente dirigido al F virtual, llega hasta el espejo en (242, ~171.5) -->
+                            <path d="M 80 130 L 242 171" fill="none" stroke="#34d399" stroke-width="2.5"/>
+                            <!-- Prolongación virtual hacia F detrás del espejo -->
+                            <path d="M 242 171 L 362 200" fill="none" stroke="#34d399" stroke-width="2" stroke-dasharray="4,3" opacity="0.7"/>
+                            <!-- Reflejado paralelo al eje hacia la izquierda -->
+                            <path d="M 242 171 L 30 171" fill="none" stroke="#34d399" stroke-width="2.5" marker-end="url(#arrG)"/>
+                        </g>
+
+                        <!-- PASO 3: imagen virtual revelada -->
+                        <g id="paso-imagen" class="ray-anim">
+                            <line x1="312" y1="200" x2="312" y2="171" stroke="#a78bfa" stroke-width="5" stroke-linecap="round" stroke-dasharray="4,3"/>
+                            <polygon points="312,164 306,176 318,176" fill="#a78bfa" opacity="0.85"/>
+                            <text x="312" y="260" fill="#c4b5fd" font-size="11" font-weight="bold" text-anchor="middle">Imagen virtual</text>
+                            <text x="312" y="275" fill="#a78bfa" font-size="9" text-anchor="middle">derecha · reducida</text>
+                        </g>
+
+                        <defs>
+                            <marker markerUnits="userSpaceOnUse" id="arrY" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#fbbf24"/></marker>
+                            <marker markerUnits="userSpaceOnUse" id="arrG" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#34d399"/></marker>
+                        </defs>
+                    </svg>
+
+                    <!-- Botones de revelación progresiva -->
+                    <div class="flex gap-3 w-full">
+                        <button id="btn-intro-1" onclick="introPaso(1)" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-md border-b-4 border-indigo-800 active:border-b-0 active:mt-1 flex items-center justify-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4"></i> Rayo paralelo
+                        </button>
+                        <button id="btn-intro-2" onclick="introPaso(2)" disabled class="flex-1 bg-slate-700 text-slate-400 font-bold py-3 px-4 rounded-xl text-sm shadow-md cursor-not-allowed flex items-center justify-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4"></i> Rayo hacia F
+                        </button>
+                        <button id="btn-intro-3" onclick="introPaso(3)" disabled class="flex-1 bg-slate-700 text-slate-400 font-bold py-3 px-4 rounded-xl text-sm shadow-md cursor-not-allowed flex items-center justify-center gap-2">
+                            <i data-lucide="eye" class="w-4 h-4"></i> Localizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 3. DEFINICIONES                                         -->
+        <!-- ====================================================== -->
+        <div class="slide bg-slate-50 p-10">
+            <div class="flex items-center gap-6 mb-6 border-b-4 border-slate-200 pb-3 shrink-0">
+                <i data-lucide="book-open" class="w-12 h-12 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Definiciones</h2>
+            </div>
+
+            <div class="flex-1 flex flex-col gap-4">
+
+                <!-- Definición central + diagrama maestro -->
+                <div class="grid grid-cols-12 gap-5">
+
+                    <!-- Diagrama maestro: anatomía del espejo convexo -->
+                    <div class="col-span-12 lg:col-span-7 bg-slate-900 text-white p-5 rounded-3xl shadow-xl border-b-8 border-indigo-600">
+                        <p class="text-indigo-300 font-bold uppercase tracking-widest text-xs mb-3">Anatomía de un espejo convexo</p>
+                        <svg viewBox="0 0 560 280" class="w-full max-h-[260px]">
+                            <!-- Eje óptico -->
+                            <line x1="10" y1="140" x2="550" y2="140" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4"/>
+                            <text x="20" y="155" fill="#cbd5e1" font-size="11" font-weight="bold">eje óptico</text>
+
+                            <!-- Espejo convexo: forma "(" · vértice V(202,140) · centro geométrico (480,140) radio 278 -->
+                            <path d="M 229 20 A 278 278 0 0 0 229 260" fill="none" stroke="#67e8f9" stroke-width="5"/>
+                            <g stroke="#67e8f9" stroke-width="1.5" opacity="0.55">
+                                <line x1="225" y1="30" x2="240" y2="26"/>
+                                <line x1="212" y1="65" x2="227" y2="62"/>
+                                <line x1="205" y1="100" x2="220" y2="97"/>
+                                <line x1="202" y1="140" x2="217" y2="140"/>
+                                <line x1="205" y1="180" x2="220" y2="182"/>
+                                <line x1="212" y1="215" x2="227" y2="218"/>
+                                <line x1="225" y1="250" x2="240" y2="254"/>
+                            </g>
+
+                            <!-- Vértice V -->
+                            <circle cx="202" cy="140" r="6" fill="#facc15" stroke="#fde68a" stroke-width="1.5"/>
+                            <text x="202" y="180" fill="#fde68a" font-size="16" font-weight="800" text-anchor="middle">V</text>
+                            <text x="202" y="195" fill="#facc15" font-size="10" font-weight="bold" text-anchor="middle">vértice</text>
+
+                            <!-- Foco F (virtual, detrás del espejo) -->
+                            <circle cx="340" cy="140" r="6" fill="#10b981" stroke="#6ee7b7" stroke-width="1.5"/>
+                            <text x="340" y="125" fill="#6ee7b7" font-size="16" font-weight="800" text-anchor="middle">F</text>
+                            <text x="340" y="110" fill="#10b981" font-size="10" font-weight="bold" text-anchor="middle">foco (virtual)</text>
+
+                            <!-- Centro de curvatura C (virtual, detrás) -->
+                            <circle cx="480" cy="140" r="6" fill="#f472b6" stroke="#fbcfe8" stroke-width="1.5"/>
+                            <text x="480" y="125" fill="#fbcfe8" font-size="16" font-weight="800" text-anchor="middle">C</text>
+                            <text x="480" y="110" fill="#f472b6" font-size="10" font-weight="bold" text-anchor="middle">centro (virtual)</text>
+
+                            <!-- Cota R (de V a C) -->
+                            <line x1="202" y1="240" x2="480" y2="240" stroke="#fbcfe8" stroke-width="1.5" marker-end="url(#arrPk)" marker-start="url(#arrPkR)"/>
+                            <rect x="321" y="248" width="40" height="22" fill="#831843" rx="3"/>
+                            <text x="341" y="263" fill="#fbcfe8" font-size="13" font-weight="800" text-anchor="middle">R</text>
+
+                            <!-- Cota f (de V a F) -->
+                            <line x1="202" y1="210" x2="340" y2="210" stroke="#6ee7b7" stroke-width="1.5" marker-end="url(#arrEm)" marker-start="url(#arrEmR)"/>
+                            <rect x="261" y="218" width="20" height="20" fill="#064e3b" rx="3"/>
+                            <text x="271" y="232" fill="#6ee7b7" font-size="12" font-weight="800" text-anchor="middle">f</text>
+
+                            <defs>
+                                <marker markerUnits="userSpaceOnUse" id="arrPk" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><polygon points="0 0, 5 2.5, 0 5" fill="#fbcfe8"/></marker>
+                                <marker markerUnits="userSpaceOnUse" id="arrPkR" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto-start-reverse"><polygon points="0 0, 5 2.5, 0 5" fill="#fbcfe8"/></marker>
+                                <marker markerUnits="userSpaceOnUse" id="arrEm" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><polygon points="0 0, 5 2.5, 0 5" fill="#6ee7b7"/></marker>
+                                <marker markerUnits="userSpaceOnUse" id="arrEmR" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto-start-reverse"><polygon points="0 0, 5 2.5, 0 5" fill="#6ee7b7"/></marker>
+                            </defs>
+                        </svg>
+                    </div>
+
+                    <!-- Convención de signos -->
+                    <div class="col-span-12 lg:col-span-5 flex flex-col gap-4">
+                        <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl border-b-8 border-emerald-500 flex-1 flex flex-col justify-center">
+                            <p class="text-emerald-300 font-bold uppercase tracking-widest text-xs mb-3">Convención de signos</p>
+                            <p class="text-base text-slate-300 leading-relaxed mb-4">
+                                En un espejo convexo $F$ y $C$ se ubican <strong>detrás</strong> del espejo: son virtuales. Por convención se asignan valores negativos.
+                            </p>
+                            <div class="bg-slate-800 px-6 py-5 rounded-2xl border border-slate-700 text-center">
+                                <p class="text-4xl font-mono font-black text-emerald-300">$$ f = -\dfrac{R}{2} $$</p>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-3 italic text-center">$f < 0$ y $R < 0$ · imagen siempre $d_i < 0$ (virtual)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 propiedades clave -->
+                <div class="grid grid-cols-4 gap-4">
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">1</div>
+                            <h4 class="text-lg font-bold text-slate-900">Imagen virtual</h4>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            Los rayos reflejados nunca convergen físicamente. La imagen se forma <strong>detrás del espejo</strong> donde se cruzan sus prolongaciones.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">2</div>
+                            <h4 class="text-lg font-bold text-slate-900">Derecha</h4>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            La imagen conserva la orientación del objeto: no se invierte verticalmente. El aumento $A > 0$.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold">3</div>
+                            <h4 class="text-lg font-bold text-slate-900">Reducida</h4>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            La imagen es siempre menor que el objeto: $|A| < 1$. A mayor distancia del objeto, más reducida.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-9 h-9 rounded-full bg-rose-100 flex items-center justify-center text-rose-700 font-bold">4</div>
+                            <h4 class="text-lg font-bold text-slate-900">Campo amplio</h4>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            Al reducir el tamaño aparente, el espejo abarca <strong>mayor campo visual</strong>. Por esto se usa en retrovisores y vigilancia.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Nota: tres reglas válidas con F y C virtuales -->
+                <div class="bg-indigo-50 p-4 rounded-2xl border-l-8 border-indigo-500 shadow-sm flex items-center gap-4">
+                    <div class="bg-indigo-600 text-white p-2 rounded-lg shrink-0">
+                        <i data-lucide="info" class="w-5 h-5"></i>
+                    </div>
+                    <p class="text-sm text-slate-700 leading-relaxed flex-1">
+                        Las <strong>tres reglas del diagrama de rayos</strong> siguen siendo válidas, pero ahora los rayos se trazan <strong>apuntando hacia</strong> $F$ y $C$ virtuales. La imagen se localiza con las <strong>prolongaciones</strong> de los rayos reflejados detrás del espejo.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 4. EJEMPLO                                              -->
+        <!-- ====================================================== -->
+        <div class="slide bg-white p-10">
+            <div class="flex items-center justify-between mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <div class="flex items-center gap-6">
+                    <i data-lucide="play-circle" class="w-12 h-12 text-indigo-800"></i>
+                    <h2 class="text-5xl font-bold text-slate-900">Ejemplo</h2>
+                </div>
+                <button onclick="avanzarEjemplo()" id="btn-ejemplo" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-xl text-xl transition flex items-center gap-2 shadow-md">
+                    Siguiente Paso <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8 flex-1">
+
+                <div class="col-span-12 lg:col-span-5 flex flex-col gap-3">
+                    <div class="bg-slate-50 rounded-2xl border border-slate-200 p-5 shadow-sm">
+                        <p class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-3">Enunciado</p>
+                        <p class="text-base font-medium text-slate-800 leading-relaxed">
+                            Un espejo convexo posee distancia focal $f = -12\text{ cm}$ (y por lo tanto $R = -24\text{ cm}$). Un objeto se ubica a <strong>$d_o = 18\text{ cm}$</strong> frente al espejo.
+                        </p>
+                        <p class="text-base font-medium text-slate-800 leading-relaxed mt-2">
+                            Construya el diagrama de rayos y describa la imagen.
+                        </p>
+                    </div>
+
+                    <div id="paso-A" class="paso-ejemplo hidden bg-white border-l-8 border-l-amber-500 border border-slate-200 rounded-2xl p-4 shadow-sm">
+                        <p class="font-bold text-amber-700 text-sm uppercase tracking-widest mb-1">Paso 1 · Rayo paralelo</p>
+                        <p class="text-base text-slate-700">Trazamos un rayo desde la punta del objeto <strong>paralelo al eje</strong>. Al impactar el espejo se refleja alejándose del eje, como si proviniera del foco $F$ virtual detrás del espejo.</p>
+                    </div>
+
+                    <div id="paso-B" class="paso-ejemplo hidden bg-white border-l-8 border-l-emerald-500 border border-slate-200 rounded-2xl p-4 shadow-sm">
+                        <p class="font-bold text-emerald-700 text-sm uppercase tracking-widest mb-1">Paso 2 · Rayo apuntando a F</p>
+                        <p class="text-base text-slate-700">Trazamos un segundo rayo dirigido <strong>hacia $F$ virtual</strong>. Al impactar el espejo se refleja paralelo al eje óptico.</p>
+                    </div>
+
+                    <div id="paso-C" class="paso-ejemplo hidden bg-slate-900 text-white rounded-2xl p-4 shadow-xl border-b-8 border-violet-500">
+                        <p class="text-violet-300 font-bold text-sm uppercase tracking-widest mb-1">Resultado · Imagen virtual</p>
+                        <p class="text-base text-slate-300">Las prolongaciones de los rayos reflejados se cruzan detrás del espejo. Ese punto es la imagen.</p>
+                        <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
+                            <div class="bg-slate-800 rounded p-2"><span class="text-violet-300 font-bold">Naturaleza:</span> virtual</div>
+                            <div class="bg-slate-800 rounded p-2"><span class="text-violet-300 font-bold">Posición:</span> detrás del espejo</div>
+                            <div class="bg-slate-800 rounded p-2"><span class="text-violet-300 font-bold">Tamaño:</span> reducida</div>
+                            <div class="bg-slate-800 rounded p-2"><span class="text-violet-300 font-bold">Orientación:</span> derecha</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-12 lg:col-span-7 flex flex-col items-center justify-center">
+                    <div class="bg-slate-900 rounded-3xl p-6 shadow-xl w-full h-full flex items-center justify-center">
+                        <svg viewBox="0 0 560 380" class="w-full max-h-[420px]">
+                            <!-- Eje óptico -->
+                            <line x1="20" y1="200" x2="540" y2="200" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+                            <!-- Espejo convexo: forma "(" · vértice V(242,200) · centro geométrico (482,200) radio 240 -->
+                            <path d="M 287 60 A 240 240 0 0 0 287 340" fill="none" stroke="#67e8f9" stroke-width="5"/>
+                            <g stroke="#67e8f9" stroke-width="1.5" opacity="0.55">
+                                <line x1="280" y1="70" x2="295" y2="66"/>
+                                <line x1="260" y1="110" x2="275" y2="107"/>
+                                <line x1="247" y1="150" x2="262" y2="148"/>
+                                <line x1="242" y1="200" x2="257" y2="200"/>
+                                <line x1="247" y1="250" x2="262" y2="252"/>
+                                <line x1="260" y1="290" x2="275" y2="293"/>
+                                <line x1="280" y1="330" x2="295" y2="334"/>
+                            </g>
+
+                            <!-- V, F, C -->
+                            <circle cx="242" cy="200" r="6" fill="#facc15"/>
+                            <text x="242" y="225" fill="#fde68a" font-size="13" font-weight="800" text-anchor="middle">V</text>
+
+                            <circle cx="362" cy="200" r="6" fill="#10b981" opacity="0.85"/>
+                            <text x="362" y="225" fill="#6ee7b7" font-size="13" font-weight="800" text-anchor="middle">F</text>
+                            <text x="362" y="240" fill="#10b981" font-size="9" text-anchor="middle">virtual · 12 cm</text>
+
+                            <circle cx="482" cy="200" r="6" fill="#f472b6" opacity="0.85"/>
+                            <text x="482" y="225" fill="#fbcfe8" font-size="13" font-weight="800" text-anchor="middle">C</text>
+                            <text x="482" y="240" fill="#f472b6" font-size="9" text-anchor="middle">24 cm</text>
+
+                            <!-- OBJETO siempre visible -->
+                            <line x1="80" y1="200" x2="80" y2="120" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
+                            <polygon points="80,110 70,130 90,130" fill="#facc15"/>
+                            <text x="80" y="170" fill="#fde68a" font-size="11" font-weight="bold" text-anchor="middle">Obj</text>
+                            <text x="80" y="260" fill="#facc15" font-size="10" font-weight="bold" text-anchor="middle">18 cm</text>
+
+                            <!-- Paso A: rayo paralelo -->
+                            <g id="diag-rayo-A" class="ray-anim">
+                                <!-- Incidente paralelo desde la punta del objeto -->
+                                <path d="M 80 120 L 256 120" fill="none" stroke="#fbbf24" stroke-width="2.8"/>
+                                <!-- Reflejado: diverge alejándose del eje (arriba-izquierda); su prolongación pasa por F virtual -->
+                                <path d="M 256 120 L 130 25" fill="none" stroke="#fbbf24" stroke-width="2.8" marker-end="url(#aYE)"/>
+                                <!-- Prolongación virtual hacia F -->
+                                <path d="M 256 120 L 362 200" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="5,3" opacity="0.7"/>
+                            </g>
+
+                            <!-- Paso B: rayo hacia F virtual -->
+                            <g id="diag-rayo-B" class="ray-anim">
+                                <!-- Incidente apuntando a F virtual, impacta en (242, ~165) -->
+                                <path d="M 80 120 L 242 165" fill="none" stroke="#34d399" stroke-width="2.8"/>
+                                <!-- Prolongación virtual hacia F detrás del espejo -->
+                                <path d="M 242 165 L 362 200" fill="none" stroke="#34d399" stroke-width="2" stroke-dasharray="5,3" opacity="0.7"/>
+                                <!-- Reflejado paralelo al eje hacia la izquierda -->
+                                <path d="M 242 165 L 30 165" fill="none" stroke="#34d399" stroke-width="2.8" marker-end="url(#aGE)"/>
+                            </g>
+
+                            <!-- Paso C: imagen virtual revelada -->
+                            <g id="diag-imagen" class="ray-anim">
+                                <!-- Prolongaciones extendidas a la imagen -->
+                                <line x1="312" y1="200" x2="312" y2="165" stroke="#a78bfa" stroke-width="6" stroke-linecap="round" stroke-dasharray="4,3"/>
+                                <polygon points="312,156 304,172 320,172" fill="#a78bfa" opacity="0.85"/>
+                                <circle cx="312" cy="165" r="6" fill="#a78bfa" stroke="white" stroke-width="2"/>
+                                <text x="312" y="290" fill="#c4b5fd" font-size="11" font-weight="bold" text-anchor="middle">Imagen virtual</text>
+                                <text x="312" y="305" fill="#a78bfa" font-size="9" font-weight="bold" text-anchor="middle">derecha · reducida</text>
+                            </g>
+
+                            <defs>
+                                <marker markerUnits="userSpaceOnUse" id="aYE" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#fbbf24"/></marker>
+                                <marker markerUnits="userSpaceOnUse" id="aGE" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#34d399"/></marker>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 5. PROBLEMAS                                            -->
+        <!-- ====================================================== -->
+        <div class="slide bg-slate-50 p-10">
+            <div class="flex items-center justify-between gap-6 mb-6 border-b-4 border-slate-200 pb-3 shrink-0">
+                <div class="flex items-center gap-4">
+                    <i data-lucide="edit-3" class="w-12 h-12 text-indigo-800"></i>
+                    <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-bold uppercase tracking-widest">
+                    <span class="flex items-center gap-2 text-emerald-700"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Básico</span>
+                    <span class="flex items-center gap-2 text-amber-700"><span class="w-3 h-3 rounded-full bg-amber-400"></span> Intermedio</span>
+                    <span class="flex items-center gap-2 text-rose-700"><span class="w-3 h-3 rounded-full bg-rose-500"></span> Avanzado</span>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto w-full pb-10 pr-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+
+                    <!-- NIVEL BÁSICO -->
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-emerald-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-base">1</div>
+                            <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Básico</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Dibuje un espejo convexo señalando: vértice $V$, eje óptico, foco $F$ y centro de curvatura $C$. Indique explícitamente cuáles elementos son virtuales y por qué.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-emerald-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-base">2</div>
+                            <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Básico</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Un rayo incide paralelo al eje sobre un espejo convexo. Dibuje el rayo reflejado y la prolongación virtual que lo conecta con $F$.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-emerald-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-base">3</div>
+                            <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Básico</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Enumere las cuatro propiedades de la imagen formada por un espejo convexo (naturaleza, posición, tamaño, orientación) y compárelas brevemente con las del espejo plano.
+                        </p>
+                    </div>
+
+                    <!-- NIVEL INTERMEDIO -->
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-amber-400 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center font-black text-base">4</div>
+                            <span class="text-amber-700 font-bold text-xs uppercase tracking-widest">Intermedio</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Un espejo convexo tiene $R = 30\text{ cm}$. Un objeto se sitúa a $20\text{ cm}$ del vértice. Construya el diagrama de rayos usando las reglas 1 y 2 y describa la imagen.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-amber-400 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center font-black text-base">5</div>
+                            <span class="text-amber-700 font-bold text-xs uppercase tracking-widest">Intermedio</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Compare las imágenes formadas por un espejo cóncavo y uno convexo del mismo radio, ambos con un objeto colocado a la misma distancia $d_o > R$. Diferencie naturaleza, orientación y tamaño relativo.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-amber-400 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center font-black text-base">6</div>
+                            <span class="text-amber-700 font-bold text-xs uppercase tracking-widest">Intermedio</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            En el retrovisor convexo de un automóvil ($f = -2{,}0\text{ m}$), otro auto aparece a $5\text{ m}$ del espejo. Construya el diagrama y explique por qué el conductor subestima su distancia real.
+                        </p>
+                    </div>
+
+                    <!-- NIVEL AVANZADO -->
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-rose-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-black text-base">7</div>
+                            <span class="text-rose-700 font-bold text-xs uppercase tracking-widest">Avanzado</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Un espejo convexo tiene $R = 40\text{ cm}$ y un objeto se ubica a $30\text{ cm}$. Usando la ecuación del espejo $\tfrac{1}{d_o} + \tfrac{1}{d_i} = \tfrac{1}{f}$, calcule la posición $d_i$ y el aumento $A$ de la imagen. Interprete el signo del resultado.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-rose-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-black text-base">8</div>
+                            <span class="text-rose-700 font-bold text-xs uppercase tracking-widest">Avanzado</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Análisis PAES: explique por qué en los pasillos de los supermercados se instalan grandes espejos convexos cerca del techo. ¿Qué propiedad geométrica de la imagen los hace superiores a un espejo plano para esta función?
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-rose-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-black text-base">9</div>
+                            <span class="text-rose-700 font-bold text-xs uppercase tracking-widest">Avanzado</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Demuestre geométricamente que, sin importar la distancia $d_o$ a la que se ubique el objeto frente a un espejo convexo, la imagen es <strong>siempre</strong> virtual, derecha y reducida. Justifique analizando el comportamiento de las dos primeras reglas del diagrama de rayos.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 6. TICKET DE SALIDA                                     -->
+        <!-- ====================================================== -->
+        <div class="slide bg-white p-10">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-100 pb-4 shrink-0 justify-between">
+                <div class="flex items-center gap-4">
+                    <i data-lucide="check-square" class="w-12 h-12 text-indigo-800"></i>
+                    <h2 class="text-6xl font-bold text-slate-800">Ticket de Salida</h2>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-12 flex-1 min-h-[450px]">
+                <div class="col-span-12 xl:col-span-6 flex flex-col justify-center space-y-6">
+                    <div class="bg-slate-50 border border-slate-200 p-8 rounded-3xl shadow-sm">
+                        <p class="text-xl font-medium text-slate-800 leading-relaxed mb-4">
+                            El retrovisor lateral de un automóvil es un espejo convexo con distancia focal <strong class="text-indigo-700">$f = -15\text{ cm}$</strong>. Un peatón de $1{,}70\text{ m}$ se encuentra a <strong class="text-indigo-700">$6\text{ m}$</strong> detrás del vehículo.
+                        </p>
+
+                        <p class="text-xl font-bold text-slate-900 mb-3">Resuelva en su cuaderno:</p>
+                        <ol class="list-decimal list-inside text-lg text-slate-700 font-medium space-y-2 ml-2">
+                            <li>Calcule la posición $d_i$ de la imagen aplicando la ecuación del espejo.</li>
+                            <li>Determine el aumento $A$ y la altura de la imagen del peatón.</li>
+                            <li>Describa la naturaleza, orientación y tamaño de la imagen, y justifique por qué la advertencia "los objetos están más cerca de lo que parecen" tiene base física.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="col-span-12 xl:col-span-6 flex flex-col bg-slate-900 rounded-3xl p-8 shadow-xl items-center justify-center relative">
+                    <button id="btn-ticket" onclick="revelarTicket()" class="w-full max-w-sm px-8 py-6 bg-indigo-600 text-white rounded-2xl text-2xl font-bold hover:bg-indigo-500 transition shadow-lg border-b-4 border-indigo-800 active:border-b-0 active:mt-1">
+                        Revelar Pauta
+                    </button>
+
+                    <div id="respuesta-ticket" class="hidden absolute inset-0 w-full h-full p-8 flex-col justify-center bg-indigo-50 text-slate-800 rounded-3xl border-4 border-indigo-500 z-10 overflow-y-auto">
+                        <div class="text-base space-y-4 text-left">
+                            <div>
+                                <p class="font-bold text-slate-900 mb-1 bg-indigo-200 w-fit px-3 py-1 rounded-lg">1. Posición de la imagen</p>
+                                <p class="text-sm text-slate-700">Convirtiendo: $d_o = 600\text{ cm}$, $f = -15\text{ cm}$.</p>
+                                <p class="font-mono text-center mt-1">$\dfrac{1}{600} + \dfrac{1}{d_i} = \dfrac{1}{-15}$</p>
+                                <p class="font-mono text-center mt-1">$d_i \approx \mathbf{-14{,}63\text{ cm}}$ (virtual)</p>
+                            </div>
+                            <div class="border-t-2 border-indigo-200 pt-3">
+                                <p class="font-bold text-slate-900 mb-1 bg-indigo-200 w-fit px-3 py-1 rounded-lg">2. Aumento y altura</p>
+                                <p class="font-mono text-center">$A = -\dfrac{d_i}{d_o} = -\dfrac{-14{,}63}{600} \approx \mathbf{+0{,}024}$</p>
+                                <p class="font-mono text-center mt-1">$h_i = A \cdot h_o = 0{,}024 \cdot 170 \approx \mathbf{4{,}14\text{ cm}}$</p>
+                            </div>
+                            <div class="border-t-2 border-indigo-200 pt-3">
+                                <p class="font-bold text-slate-900 mb-1 bg-indigo-200 w-fit px-3 py-1 rounded-lg">3. Características y justificación</p>
+                                <p class="text-sm text-slate-700">Imagen <strong>virtual</strong> ($d_i < 0$), <strong>derecha</strong> ($A > 0$) y fuertemente <strong>reducida</strong> ($|A| \ll 1$).</p>
+                                <p class="text-sm text-slate-700 mt-2">El cerebro estima distancias usando el tamaño aparente. Al ver al peatón muy pequeño, lo interpreta como lejano cuando físicamente está a sólo $6\text{ m}$. De ahí la advertencia legal del retrovisor.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fixed bottom-0 w-full bg-white border-t-2 border-slate-200 px-10 py-5 flex justify-between items-center z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <p class="text-slate-600 font-extrabold tracking-widest uppercase text-xl">
+            CLASE 13 • ESPEJOS CONVEXOS • LQ
+        </p>
+        <div class="flex gap-4 items-center" id="dot-container">
+            <div class="w-5 h-5 rounded-full bg-indigo-800 shadow-sm transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let currentSlide = 0;
+        let estadoEjemplo = 0;
+        let estadoIntro = 0;
+
+        function updateSlide() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('#dot-container div');
+
+            slides.forEach((s, i) => {
+                s.classList.remove('active');
+                if (i === currentSlide) {
+                    s.classList.add('active');
+                    s.scrollTop = 0;
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                dot.className = i === currentSlide
+                    ? "w-5 h-5 rounded-full bg-indigo-800 shadow-sm transition-all duration-300"
+                    : "w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300";
+            });
+        }
+
+        function changeSlide(d) {
+            const slides = document.querySelectorAll('.slide');
+            const n = currentSlide + d;
+            if (n >= 0 && n < slides.length) {
+                currentSlide = n;
+                updateSlide();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (['ArrowRight', ' ', 'Enter'].includes(e.key)) changeSlide(1);
+            if (['ArrowLeft', 'Backspace'].includes(e.key)) changeSlide(-1);
+        });
+
+        function disableBtn(id) {
+            const b = document.getElementById(id);
+            b.disabled = true;
+            b.className = 'flex-1 bg-slate-700 text-slate-400 font-bold py-3 px-4 rounded-xl text-sm shadow-md cursor-not-allowed flex items-center justify-center gap-2';
+        }
+        function enableBtn(id) {
+            const b = document.getElementById(id);
+            b.disabled = false;
+            b.className = 'flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-md border-b-4 border-indigo-800 active:border-b-0 active:mt-1 flex items-center justify-center gap-2';
+        }
+
+        function introPaso(n) {
+            if (n === 1 && estadoIntro === 0) {
+                document.getElementById('paso-rayo1').classList.add('visible');
+                disableBtn('btn-intro-1');
+                enableBtn('btn-intro-2');
+                lucide.createIcons();
+                estadoIntro = 1;
+            } else if (n === 2 && estadoIntro === 1) {
+                document.getElementById('paso-rayo2').classList.add('visible');
+                disableBtn('btn-intro-2');
+                enableBtn('btn-intro-3');
+                lucide.createIcons();
+                estadoIntro = 2;
+            } else if (n === 3 && estadoIntro === 2) {
+                document.getElementById('signo-pregunta').style.display = 'none';
+                document.getElementById('paso-imagen').classList.add('visible');
+                const b3 = document.getElementById('btn-intro-3');
+                b3.disabled = true;
+                b3.className = 'flex-1 bg-emerald-700 text-emerald-200 font-bold py-3 px-4 rounded-xl text-sm shadow-md cursor-not-allowed flex items-center justify-center gap-2';
+                b3.innerHTML = '<i data-lucide="check-circle"></i> Imagen localizada';
+                lucide.createIcons();
+                document.getElementById('intuicion').classList.add('show');
+                estadoIntro = 3;
+            }
+        }
+
+        function avanzarEjemplo() {
+            estadoEjemplo++;
+            if (estadoEjemplo === 1) {
+                document.getElementById('paso-A').classList.remove('hidden');
+                setTimeout(() => document.getElementById('paso-A').classList.add('visible'), 50);
+                document.getElementById('diag-rayo-A').classList.add('visible');
+            } else if (estadoEjemplo === 2) {
+                document.getElementById('paso-B').classList.remove('hidden');
+                setTimeout(() => document.getElementById('paso-B').classList.add('visible'), 50);
+                document.getElementById('diag-rayo-B').classList.add('visible');
+            } else if (estadoEjemplo === 3) {
+                document.getElementById('paso-C').classList.remove('hidden');
+                setTimeout(() => document.getElementById('paso-C').classList.add('visible'), 50);
+                document.getElementById('diag-imagen').classList.add('visible');
+                document.getElementById('btn-ejemplo').style.display = 'none';
+            }
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function revelarTicket() {
+            document.getElementById('btn-ticket').style.display = 'none';
+            const res = document.getElementById('respuesta-ticket');
+            res.classList.remove('hidden');
+            res.classList.add('flex');
+            if (window.MathJax) MathJax.typesetPromise([res]);
+        }
+    </script>
+</body>
+</html>

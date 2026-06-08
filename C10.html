@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espejos Planos - IIIº Medio F3</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            startup: { typeset: true }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; background-color: #f8fafc; }
+        #slide-container { height: calc(100vh - 5rem); width: 100vw; position: relative; }
+
+        .slide {
+            display: none; height: 100%; width: 100%; flex-direction: column;
+            overflow-y: auto; overflow-x: hidden; padding-bottom: 10rem; scroll-behavior: smooth;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .slide.active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-q {
+            0%, 100% { transform: scale(1); opacity: 0.85; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+        .pulse-q { transform-origin: center; transform-box: fill-box; animation: pulse-q 1.8s ease-in-out infinite; }
+
+        .glass-card { background: rgba(255, 255, 255, 0.98); border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+
+        ::-webkit-scrollbar { width: 14px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 8px; margin: 10px 0; }
+        ::-webkit-scrollbar-thumb { background: #4338ca; border-radius: 8px; border: 3px solid #e2e8f0; }
+
+        .paso-ejemplo { opacity: 0; transform: translateY(20px); transition: all 0.5s ease-out; }
+        .paso-ejemplo.visible { opacity: 1; transform: translateY(0); }
+
+        .ray-anim { opacity: 0; transition: opacity 0.7s ease-out; }
+        .ray-anim.visible { opacity: 1; }
+
+        .intuition { opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.6s ease-out, max-height 0.7s ease-out; }
+        .intuition.show { opacity: 1; max-height: 400px; }
+
+        .mirror-hatch { stroke: #67e8f9; stroke-width: 1.5; opacity: 0.7; }
+
+        .problema-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .problema-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+    </style>
+</head>
+
+<body class="text-slate-800 select-none flex flex-col">
+
+    <div class="h-4 w-full bg-indigo-800 shrink-0 fixed top-0 z-50"></div>
+
+    <div id="slide-container" class="mt-4">
+
+        <!-- ====================================================== -->
+        <!-- 1. PORTADA                                              -->
+        <!-- ====================================================== -->
+        <div class="slide active p-10 bg-slate-50">
+            <div class="flex-1 flex flex-col items-center justify-center space-y-8 w-full h-full min-h-[500px]">
+                <div class="bg-indigo-100 p-8 rounded-full shadow-inner border-4 border-white">
+                    <i data-lucide="square-stack" class="w-32 h-32 text-indigo-800"></i>
+                </div>
+                <h1 class="text-7xl font-extrabold tracking-tight text-slate-900 uppercase text-center">
+                    Espejos Planos
+                </h1>
+                <p class="text-4xl text-slate-600 font-semibold tracking-wide text-center max-w-3xl leading-snug">
+                    Formación Geométrica de Imágenes
+                </p>
+
+                <div class="mt-16 p-8 glass-card rounded-2xl border-l-8 border-indigo-800 text-left w-full max-w-5xl flex justify-between items-end shadow-md">
+                    <div>
+                        <p class="text-xl font-bold text-slate-500 uppercase tracking-widest mb-1">Profesor</p>
+                        <p class="text-4xl font-bold text-slate-900">Luis Quezada</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-3xl font-bold text-indigo-800 uppercase tracking-wider">SEK CHILE • IIIº F3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 2. INTRODUCCIÓN — Misterio progresivo                   -->
+        <!-- ====================================================== -->
+        <div class="slide bg-white p-10">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <i data-lucide="hand" class="w-12 h-12 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Introducción</h2>
+            </div>
+
+            <div class="grid grid-cols-12 gap-10 flex-1 items-center">
+
+                <div class="col-span-12 lg:col-span-6 flex flex-col gap-6">
+                    <p class="text-3xl text-slate-700 leading-relaxed font-medium">
+                        Te paras frente a un espejo y ves una persona idéntica a ti, parada a la misma distancia, <strong class="text-indigo-800">detrás del cristal</strong>.
+                    </p>
+
+                    <div class="bg-slate-50 p-6 rounded-2xl border-l-8 border-slate-700 shadow-sm">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i data-lucide="help-circle" class="w-7 h-7 text-slate-700"></i>
+                            <p class="text-xl font-bold uppercase tracking-wide text-slate-900">La pregunta</p>
+                        </div>
+                        <p class="text-lg text-slate-700 font-medium leading-relaxed">
+                            Pero el espejo es una superficie opaca: la luz nunca pasa al otro lado. Entonces, ¿dónde está realmente esa imagen? ¿Cómo se construye geométricamente lo que tu ojo percibe?
+                        </p>
+                    </div>
+
+                    <div id="intuicion" class="intuition bg-indigo-50 p-6 rounded-2xl border-l-8 border-indigo-700 shadow-sm">
+                        <div class="flex items-center gap-3 mb-2">
+                            <i data-lucide="lightbulb" class="w-7 h-7 text-indigo-800"></i>
+                            <p class="text-xl font-bold uppercase tracking-wide text-indigo-900">Conclusión</p>
+                        </div>
+                        <p class="text-lg text-slate-700 font-medium leading-relaxed">
+                            Los rayos reflejados llegan al ojo como si vinieran desde un punto <strong>detrás del espejo</strong>. La imagen no existe físicamente: es una <strong>construcción geométrica</strong> obtenida al prolongar los rayos reflejados hacia atrás.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-span-12 lg:col-span-6 bg-slate-900 rounded-3xl p-6 flex flex-col items-center justify-between h-[540px] shadow-xl">
+                    <p class="text-indigo-300 font-bold uppercase tracking-widest text-sm">Diagrama interactivo</p>
+
+                    <svg viewBox="0 0 500 360" class="w-full max-h-[380px]">
+                        <!-- Espejo vertical central -->
+                        <line x1="260" y1="30" x2="260" y2="330" stroke="#67e8f9" stroke-width="4"/>
+                        <!-- Hatching: superficie reflectora del lado izquierdo (cara real) -->
+                        <g>
+                            <line x1="260" y1="40"  x2="272" y2="30"  class="mirror-hatch"/>
+                            <line x1="260" y1="70"  x2="272" y2="60"  class="mirror-hatch"/>
+                            <line x1="260" y1="100" x2="272" y2="90"  class="mirror-hatch"/>
+                            <line x1="260" y1="130" x2="272" y2="120" class="mirror-hatch"/>
+                            <line x1="260" y1="160" x2="272" y2="150" class="mirror-hatch"/>
+                            <line x1="260" y1="190" x2="272" y2="180" class="mirror-hatch"/>
+                            <line x1="260" y1="220" x2="272" y2="210" class="mirror-hatch"/>
+                            <line x1="260" y1="250" x2="272" y2="240" class="mirror-hatch"/>
+                            <line x1="260" y1="280" x2="272" y2="270" class="mirror-hatch"/>
+                            <line x1="260" y1="310" x2="272" y2="300" class="mirror-hatch"/>
+                        </g>
+                        <text x="260" y="350" fill="#94a3b8" font-size="11" font-weight="bold" text-anchor="middle">espejo</text>
+
+                        <!-- OBJETO: punta de flecha amarilla (1 punto representativo) -->
+                        <g>
+                            <line x1="100" y1="200" x2="100" y2="120" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
+                            <polygon points="100,110 92,128 108,128" fill="#facc15"/>
+                            <text x="100" y="225" fill="#fde68a" font-size="13" font-weight="bold" text-anchor="middle">Objeto</text>
+                        </g>
+
+                        <!-- OBSERVADOR: ojo -->
+                        <g transform="translate(160, 290)">
+                            <ellipse cx="0" cy="0" rx="22" ry="11" fill="white" stroke="#cbd5e1" stroke-width="1.5"/>
+                            <circle cx="0" cy="0" r="6" fill="#1e293b"/>
+                            <circle cx="-1" cy="-1" r="1.5" fill="white"/>
+                            <text x="0" y="28" fill="#cbd5e1" font-size="13" font-weight="bold" text-anchor="middle">Observador</text>
+                        </g>
+
+                        <!-- INTERROGACIÓN inicial detrás del espejo -->
+                        <g id="signo-pregunta">
+                            <text x="400" y="190" fill="#64748b" font-size="120" font-weight="800" text-anchor="middle" class="pulse-q">?</text>
+                        </g>
+
+                        <!-- PASO 1: rayos reales objeto -> espejo -> ojo (ocultos al inicio) -->
+                        <!-- Impactos calculados por simetría: recta imagen-ojo corta el espejo (x=260) -->
+                        <g id="paso-rayos" class="ray-anim">
+                            <!-- Rayo desde la punta del objeto -->
+                            <path d="M 100 110 L 260 215" fill="none" stroke="#facc15" stroke-width="2.5"/>
+                            <path d="M 260 215 L 160 280" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrG)"/>
+                            <!-- Rayo desde la base del objeto -->
+                            <path d="M 100 200 L 260 249" fill="none" stroke="#facc15" stroke-width="2.5"/>
+                            <path d="M 260 249 L 160 280" fill="none" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrG)"/>
+                            <!-- Etiquetas -->
+                            <text x="150" y="150" fill="#fde68a" font-size="11" font-weight="bold">rayo incidente</text>
+                            <text x="175" y="272" fill="#6ee7b7" font-size="11" font-weight="bold">rayo reflejado</text>
+                        </g>
+
+                        <!-- PASO 2: prolongaciones virtuales + imagen (ocultos al inicio) -->
+                        <g id="paso-imagen" class="ray-anim">
+                            <!-- Prolongaciones punteadas hacia atrás (colineales con los reflejados) -->
+                            <path d="M 260 215 L 420 110" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="5,3" opacity="0.75"/>
+                            <path d="M 260 249 L 420 200" fill="none" stroke="#10b981" stroke-width="2" stroke-dasharray="5,3" opacity="0.75"/>
+
+                            <!-- Imagen F (flecha verde punteada) -->
+                            <line x1="420" y1="200" x2="420" y2="110" stroke="#10b981" stroke-width="6" stroke-linecap="round" stroke-dasharray="6,3"/>
+                            <polygon points="420,100 412,118 428,118" fill="#10b981" opacity="0.8"/>
+                            <text x="420" y="225" fill="#6ee7b7" font-size="13" font-weight="bold" text-anchor="middle">Imagen</text>
+                            <text x="420" y="240" fill="#10b981" font-size="10" font-weight="bold" text-anchor="middle" font-style="italic">(virtual)</text>
+                        </g>
+
+                        <defs>
+                            <marker markerUnits="userSpaceOnUse" id="arrG" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#10b981"/></marker>
+                        </defs>
+                    </svg>
+
+                    <!-- Botones de revelación progresiva -->
+                    <div class="flex gap-3 w-full">
+                        <button id="btn-intro-1" onclick="introPaso(1)" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-md border-b-4 border-indigo-800 active:border-b-0 active:mt-1 flex items-center justify-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4"></i> Trayectoria de la luz
+                        </button>
+                        <button id="btn-intro-2" onclick="introPaso(2)" disabled class="flex-1 bg-slate-700 text-slate-400 font-bold py-3 px-4 rounded-xl text-sm shadow-md cursor-not-allowed flex items-center justify-center gap-2">
+                            <i data-lucide="eye" class="w-4 h-4"></i> Construir imagen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 3. DEFINICIONES                                         -->
+        <!-- ====================================================== -->
+        <div class="slide bg-slate-50 p-10">
+            <div class="flex items-center gap-6 mb-6 border-b-4 border-slate-200 pb-3 shrink-0">
+                <i data-lucide="book-open" class="w-12 h-12 text-indigo-800"></i>
+                <h2 class="text-5xl font-bold text-slate-900">Definiciones</h2>
+            </div>
+
+            <div class="flex-1 flex flex-col gap-4">
+
+                <!-- Definición central -->
+                <div class="bg-slate-900 text-white p-7 rounded-3xl shadow-xl flex items-center justify-between border-b-8 border-indigo-600 gap-8">
+                    <div class="flex-1">
+                        <p class="text-indigo-300 font-bold uppercase tracking-widest text-sm mb-2">Imagen en un espejo plano</p>
+                        <p class="text-base text-slate-300 leading-relaxed">
+                            Se construye reflejando cada punto del objeto perpendicularmente al espejo, a igual distancia detrás de su superficie.
+                        </p>
+                        <p class="text-sm text-slate-400 mt-2">
+                            $d_o$: distancia del objeto al espejo. $\;d_i$: distancia de la imagen al espejo.
+                        </p>
+                    </div>
+                    <div class="text-5xl font-mono font-black tracking-tight bg-slate-800 px-7 py-5 rounded-2xl border border-slate-700 shrink-0">
+                        $$ d_o = d_i $$
+                    </div>
+                </div>
+
+                <!-- 4 propiedades con mini-diagramas -->
+                <div class="grid grid-cols-4 gap-4">
+
+                    <!-- 1 · Virtual -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm">1</div>
+                            <h4 class="text-lg font-bold text-slate-900">Virtual</h4>
+                        </div>
+                        <div class="bg-slate-900 rounded-xl p-2 mb-3 flex items-center justify-center h-24">
+                            <svg viewBox="0 0 140 70" class="w-full h-full">
+                                <line x1="70" y1="8" x2="70" y2="62" stroke="#67e8f9" stroke-width="2.5"/>
+                                <path d="M 25 50 L 70 30" fill="none" stroke="#facc15" stroke-width="1.8"/>
+                                <path d="M 70 30 L 25 15" fill="none" stroke="#10b981" stroke-width="1.8"/>
+                                <path d="M 70 30 L 115 50" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.7"/>
+                                <circle cx="115" cy="50" r="3.5" fill="#10b981" opacity="0.8"/>
+                            </svg>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            La imagen se forma <strong>detrás</strong> del espejo: los rayos no convergen físicamente, solo en su prolongación.
+                        </p>
+                    </div>
+
+                    <!-- 2 · Simétrica -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm">2</div>
+                            <h4 class="text-lg font-bold text-slate-900">Simétrica</h4>
+                        </div>
+                        <div class="bg-slate-900 rounded-xl p-2 mb-3 flex items-center justify-center h-24">
+                            <svg viewBox="0 0 140 70" class="w-full h-full">
+                                <line x1="70" y1="8" x2="70" y2="62" stroke="#67e8f9" stroke-width="2.5"/>
+                                <line x1="30" y1="35" x2="30" y2="20" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                                <polygon points="30,15 26,23 34,23" fill="#facc15"/>
+                                <line x1="110" y1="35" x2="110" y2="20" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-dasharray="3,2"/>
+                                <polygon points="110,15 106,23 114,23" fill="#10b981" opacity="0.7"/>
+                                <line x1="30" y1="55" x2="70" y2="55" stroke="#94a3b8" stroke-width="1" marker-end="url(#aR)" marker-start="url(#aL)"/>
+                                <line x1="70" y1="55" x2="110" y2="55" stroke="#94a3b8" stroke-width="1" marker-end="url(#aR)" marker-start="url(#aL)"/>
+                                <text x="50" y="68" fill="#facc15" font-size="8" font-weight="bold" text-anchor="middle">d₀</text>
+                                <text x="90" y="68" fill="#6ee7b7" font-size="8" font-weight="bold" text-anchor="middle">dᵢ</text>
+                                <defs>
+                                    <marker markerUnits="userSpaceOnUse" id="aR" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><polygon points="0 0, 4 2, 0 4" fill="#94a3b8"/></marker>
+                                    <marker markerUnits="userSpaceOnUse" id="aL" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto-start-reverse"><polygon points="0 0, 4 2, 0 4" fill="#94a3b8"/></marker>
+                                </defs>
+                            </svg>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            La imagen está a <strong>la misma distancia</strong> del espejo que el objeto, medida perpendicularmente.
+                        </p>
+                    </div>
+
+                    <!-- 3 · Mismo tamaño -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">3</div>
+                            <h4 class="text-lg font-bold text-slate-900">Mismo tamaño</h4>
+                        </div>
+                        <div class="bg-slate-900 rounded-xl p-2 mb-3 flex items-center justify-center h-24">
+                            <svg viewBox="0 0 140 70" class="w-full h-full">
+                                <line x1="70" y1="8" x2="70" y2="62" stroke="#67e8f9" stroke-width="2.5"/>
+                                <line x1="30" y1="55" x2="30" y2="15" stroke="#facc15" stroke-width="3.5" stroke-linecap="round"/>
+                                <polygon points="30,10 25,20 35,20" fill="#facc15"/>
+                                <line x1="110" y1="55" x2="110" y2="15" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="3,2"/>
+                                <polygon points="110,10 105,20 115,20" fill="#10b981" opacity="0.7"/>
+                                <line x1="30" y1="10" x2="110" y2="10" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="2,2"/>
+                                <line x1="30" y1="55" x2="110" y2="55" stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="2,2"/>
+                            </svg>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            La imagen conserva el tamaño del objeto. El aumento lateral es $|A| = 1$.
+                        </p>
+                    </div>
+
+                    <!-- 4 · Lateralmente invertida -->
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 rounded-full bg-rose-100 flex items-center justify-center text-rose-700 font-bold text-sm">4</div>
+                            <h4 class="text-lg font-bold text-slate-900">Invertida lateralmente</h4>
+                        </div>
+                        <div class="bg-slate-900 rounded-xl p-2 mb-3 flex items-center justify-center h-24">
+                            <svg viewBox="0 0 140 70" class="w-full h-full">
+                                <line x1="70" y1="8" x2="70" y2="62" stroke="#67e8f9" stroke-width="2.5"/>
+                                <!-- F amarilla -->
+                                <g transform="translate(20, 18)">
+                                    <line x1="0" y1="0" x2="0" y2="32" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="-1" y1="2" x2="20" y2="2" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                                    <line x1="-1" y1="15" x2="14" y2="15" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                                </g>
+                                <!-- F espejada verde -->
+                                <g transform="translate(120, 18) scale(-1,1)">
+                                    <line x1="0" y1="0" x2="0" y2="32" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-dasharray="3,2"/>
+                                    <line x1="-1" y1="2" x2="20" y2="2" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-dasharray="3,2"/>
+                                    <line x1="-1" y1="15" x2="14" y2="15" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-dasharray="3,2"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">
+                            Izquierda y derecha se intercambian. La vertical (arriba-abajo) se conserva.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Propiedad de espejos múltiples -->
+                <div class="bg-indigo-50 p-4 rounded-2xl border-l-8 border-indigo-500 shadow-sm flex items-center gap-5">
+                    <div class="bg-indigo-600 text-white p-3 rounded-xl shrink-0">
+                        <i data-lucide="copy" class="w-7 h-7"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-indigo-900 font-bold uppercase tracking-widest text-xs mb-1">Sistemas de Espejos Múltiples</p>
+                        <p class="text-base text-slate-700 leading-relaxed">
+                            Dos espejos planos formando un ángulo $\alpha$ generan múltiples imágenes. El número total visible es
+                            $\;N = \dfrac{360°}{\alpha} - 1\;$ cuando $\dfrac{360°}{\alpha}$ es entero.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 4. EJEMPLO                                              -->
+        <!-- ====================================================== -->
+        <div class="slide bg-white p-10">
+            <div class="flex items-center justify-between mb-8 border-b-4 border-slate-200 pb-4 shrink-0">
+                <div class="flex items-center gap-6">
+                    <i data-lucide="play-circle" class="w-12 h-12 text-indigo-800"></i>
+                    <h2 class="text-5xl font-bold text-slate-900">Ejemplo</h2>
+                </div>
+                <button onclick="avanzarEjemplo()" id="btn-ejemplo" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 px-6 rounded-xl text-xl transition flex items-center gap-2 shadow-md">
+                    Siguiente Paso <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-12 gap-8 flex-1">
+
+                <div class="col-span-12 lg:col-span-5 flex flex-col gap-3">
+                    <div class="bg-slate-50 rounded-2xl border border-slate-200 p-5 shadow-sm">
+                        <p class="text-slate-500 font-bold uppercase tracking-widest text-sm mb-3">Enunciado</p>
+                        <p class="text-base font-medium text-slate-800 leading-relaxed">
+                            Una persona de estatura <strong>$H = 1{,}80\text{ m}$</strong> tiene sus ojos a <strong>$h = 1{,}70\text{ m}$</strong> del suelo. Desea verse de cuerpo entero en un espejo plano colgado en la pared.
+                        </p>
+                        <p class="text-base font-medium text-slate-800 leading-relaxed mt-2">
+                            Determine la <strong class="text-indigo-700">altura mínima</strong> del espejo y la posición de su borde inferior respecto al suelo.
+                        </p>
+                    </div>
+
+                    <div id="paso-A" class="paso-ejemplo hidden bg-white border-l-8 border-l-indigo-500 border border-slate-200 rounded-2xl p-4 shadow-sm">
+                        <p class="font-bold text-indigo-700 text-sm uppercase tracking-widest mb-1">Paso 1 · Borde superior</p>
+                        <p class="text-base text-slate-700">El rayo desde la cabeza ($1{,}80$) hasta el ojo ($1{,}70$) rebota en el punto medio entre ambas alturas, por la Ley de Reflexión.</p>
+                        <p class="text-xl font-mono text-indigo-800 mt-2 text-center">
+                            $$ y_{sup} = \tfrac{1{,}80 + 1{,}70}{2} = \mathbf{1{,}75\text{ m}} $$
+                        </p>
+                    </div>
+
+                    <div id="paso-B" class="paso-ejemplo hidden bg-white border-l-8 border-l-emerald-500 border border-slate-200 rounded-2xl p-4 shadow-sm">
+                        <p class="font-bold text-emerald-700 text-sm uppercase tracking-widest mb-1">Paso 2 · Borde inferior</p>
+                        <p class="text-base text-slate-700">El rayo desde los pies ($0$) hasta el ojo ($1{,}70$) rebota en el punto medio entre ambas alturas.</p>
+                        <p class="text-xl font-mono text-emerald-700 mt-2 text-center">
+                            $$ y_{inf} = \tfrac{0 + 1{,}70}{2} = \mathbf{0{,}85\text{ m}} $$
+                        </p>
+                    </div>
+
+                    <div id="paso-C" class="paso-ejemplo hidden bg-slate-900 text-white rounded-2xl p-4 shadow-xl border-b-8 border-amber-500">
+                        <p class="text-amber-300 font-bold text-sm uppercase tracking-widest mb-1">Resultado · Altura mínima</p>
+                        <p class="text-base text-slate-300">La altura del espejo es la diferencia entre sus bordes:</p>
+                        <p class="text-xl font-mono text-amber-300 mt-2 text-center">
+                            $$ L = 1{,}75 - 0{,}85 = \mathbf{0{,}90\text{ m}} = \tfrac{H}{2} $$
+                        </p>
+                        <p class="text-xs text-slate-400 mt-2 italic text-center">La altura mínima es <strong>la mitad de la estatura</strong>, sin importar la distancia al espejo.</p>
+                    </div>
+                </div>
+
+                <div class="col-span-12 lg:col-span-7 flex flex-col items-center justify-center">
+                    <div class="bg-slate-900 rounded-3xl p-6 shadow-xl w-full h-full flex items-center justify-center">
+                        <svg viewBox="0 0 540 430" class="w-full max-h-[460px]">
+                            <!-- Suelo con hatching -->
+                            <line x1="20" y1="390" x2="520" y2="390" stroke="#475569" stroke-width="3"/>
+                            <g stroke="#475569" stroke-width="1.5">
+                                <line x1="40" y1="390" x2="48" y2="405"/>
+                                <line x1="80" y1="390" x2="88" y2="405"/>
+                                <line x1="120" y1="390" x2="128" y2="405"/>
+                                <line x1="160" y1="390" x2="168" y2="405"/>
+                                <line x1="200" y1="390" x2="208" y2="405"/>
+                                <line x1="240" y1="390" x2="248" y2="405"/>
+                                <line x1="280" y1="390" x2="288" y2="405"/>
+                                <line x1="320" y1="390" x2="328" y2="405"/>
+                                <line x1="360" y1="390" x2="368" y2="405"/>
+                            </g>
+
+                            <!-- Pared (línea referencia) -->
+                            <line x1="430" y1="40" x2="430" y2="390" stroke="#334155" stroke-width="2" stroke-dasharray="4,3"/>
+
+                            <!-- PERSONA estilizada -->
+                            <!-- Cabeza -->
+                            <circle cx="150" cy="80" r="24" fill="#fbbf24" stroke="#fcd34d" stroke-width="2"/>
+                            <circle cx="160" cy="74" r="3" fill="#0f172a"/>
+                            <circle cx="161" cy="73" r="0.8" fill="white"/>
+                            <!-- Cuello -->
+                            <line x1="150" y1="104" x2="150" y2="118" stroke="#fbbf24" stroke-width="8"/>
+                            <!-- Torso -->
+                            <path d="M 130 118 L 170 118 L 175 220 L 125 220 Z" fill="#facc15" stroke="#fbbf24" stroke-width="1.5"/>
+                            <!-- Brazos -->
+                            <line x1="130" y1="130" x2="100" y2="200" stroke="#fbbf24" stroke-width="9" stroke-linecap="round"/>
+                            <line x1="170" y1="130" x2="200" y2="200" stroke="#fbbf24" stroke-width="9" stroke-linecap="round"/>
+                            <!-- Piernas -->
+                            <line x1="138" y1="220" x2="138" y2="390" stroke="#fbbf24" stroke-width="11" stroke-linecap="round"/>
+                            <line x1="162" y1="220" x2="162" y2="390" stroke="#fbbf24" stroke-width="11" stroke-linecap="round"/>
+
+                            <!-- Marcas de altura -->
+                            <line x1="120" y1="58" x2="180" y2="58" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3,2"/>
+                            <text x="60" y="62" fill="#fde047" font-size="13" font-weight="bold">cabeza · 1,80 m</text>
+
+                            <line x1="120" y1="80" x2="180" y2="80" stroke="#fef08a" stroke-width="1.5" stroke-dasharray="3,2"/>
+                            <text x="60" y="78" fill="#fef08a" font-size="13" font-weight="bold">ojos · 1,70 m</text>
+
+                            <text x="60" y="385" fill="#fef08a" font-size="13" font-weight="bold">pies · 0 m</text>
+
+                            <!-- Paso A: rayo cabeza -> espejo -> ojo + borde superior (punto medio cabeza-ojo) -->
+                            <g id="diag-rayo-A" class="ray-anim">
+                                <path d="M 150 58 L 430 69" fill="none" stroke="#818cf8" stroke-width="2.5"/>
+                                <path d="M 430 69 L 150 80" fill="none" stroke="#a78bfa" stroke-width="2.5"/>
+                                <circle cx="430" cy="69" r="7" fill="#818cf8" stroke="#a5b4fc" stroke-width="1.5"/>
+                                <text x="440" y="67" fill="#a5b4fc" font-size="13" font-weight="bold">borde sup. · 1,75 m</text>
+                            </g>
+
+                            <!-- Paso B: rayo pies -> espejo -> ojo + borde inferior (punto medio pies-ojo) -->
+                            <g id="diag-rayo-B" class="ray-anim">
+                                <path d="M 150 390 L 430 235" fill="none" stroke="#34d399" stroke-width="2.5"/>
+                                <path d="M 430 235 L 150 80" fill="none" stroke="#6ee7b7" stroke-width="2.5"/>
+                                <circle cx="430" cy="235" r="7" fill="#34d399" stroke="#6ee7b7" stroke-width="1.5"/>
+                                <text x="440" y="239" fill="#6ee7b7" font-size="13" font-weight="bold">borde inf. · 0,85 m</text>
+                            </g>
+
+                            <!-- Paso C: espejo dibujado + L = H/2 (de y=69 a y=235 → 166px = mitad de 332px) -->
+                            <g id="diag-altura" class="ray-anim">
+                                <rect x="420" y="69" width="20" height="166" fill="#1e293b" stroke="#67e8f9" stroke-width="2"/>
+                                <line x1="475" y1="69" x2="475" y2="235" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrUp)" marker-start="url(#arrDn)"/>
+                                <rect x="482" y="148" width="55" height="32" fill="#78350f" rx="4" stroke="#fbbf24" stroke-width="1"/>
+                                <text x="510" y="170" fill="#fde68a" font-size="14" font-weight="bold" text-anchor="middle">L = H/2</text>
+                            </g>
+
+                            <defs>
+                                <marker markerUnits="userSpaceOnUse" id="arrUp" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto"><polygon points="0 0, 5 2.5, 0 5" fill="#fbbf24"/></marker>
+                                <marker markerUnits="userSpaceOnUse" id="arrDn" markerWidth="5" markerHeight="5" refX="2.5" refY="2.5" orient="auto-start-reverse"><polygon points="0 0, 5 2.5, 0 5" fill="#fbbf24"/></marker>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 5. PROBLEMAS                                            -->
+        <!-- ====================================================== -->
+        <div class="slide bg-slate-50 p-10">
+            <div class="flex items-center justify-between gap-6 mb-6 border-b-4 border-slate-200 pb-3 shrink-0">
+                <div class="flex items-center gap-4">
+                    <i data-lucide="edit-3" class="w-12 h-12 text-indigo-800"></i>
+                    <h2 class="text-5xl font-bold text-slate-900">Problemas</h2>
+                </div>
+                <div class="flex items-center gap-4 text-xs font-bold uppercase tracking-widest">
+                    <span class="flex items-center gap-2 text-emerald-700"><span class="w-3 h-3 rounded-full bg-emerald-500"></span> Básico</span>
+                    <span class="flex items-center gap-2 text-amber-700"><span class="w-3 h-3 rounded-full bg-amber-400"></span> Intermedio</span>
+                    <span class="flex items-center gap-2 text-rose-700"><span class="w-3 h-3 rounded-full bg-rose-500"></span> Avanzado</span>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto w-full pb-10 pr-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+
+                    <!-- NIVEL BÁSICO · Emerald -->
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-emerald-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-base">1</div>
+                            <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Básico</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Una persona se sitúa a $2{,}5\text{ m}$ de un espejo plano. Determine la distancia que separa a la persona de su imagen y describa la naturaleza, tamaño y orientación de la imagen.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-emerald-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-base">2</div>
+                            <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Básico</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Una vela encendida se encuentra a $40\text{ cm}$ de un espejo plano. Si se aleja $25\text{ cm}$ del espejo, ¿qué distancia hay ahora entre la vela y su imagen?
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-emerald-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-black text-base">3</div>
+                            <span class="text-emerald-700 font-bold text-xs uppercase tracking-widest">Básico</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Dibuje en su cuaderno cómo se ve la letra <strong>R</strong> reflejada en un espejo plano vertical. Justifique geométricamente por qué la inversión es lateral y no vertical.
+                        </p>
+                    </div>
+
+                    <!-- NIVEL INTERMEDIO · Amber -->
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-amber-400 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center font-black text-base">4</div>
+                            <span class="text-amber-700 font-bold text-xs uppercase tracking-widest">Intermedio</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Dos espejos planos forman un ángulo de $60°$ entre sí. Determine el número total de imágenes que se forman de un objeto puntual ubicado entre ellos.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-amber-400 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center font-black text-base">5</div>
+                            <span class="text-amber-700 font-bold text-xs uppercase tracking-widest">Intermedio</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Una persona de $1{,}60\text{ m}$ con los ojos a $1{,}50\text{ m}$ del suelo desea verse de cuerpo entero. Calcule la altura mínima del espejo y la altura del borde inferior respecto al suelo.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-amber-400 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center font-black text-base">6</div>
+                            <span class="text-amber-700 font-bold text-xs uppercase tracking-widest">Intermedio</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Una persona camina hacia un espejo plano fijo con rapidez $0{,}8\text{ m/s}$. Determine con qué rapidez se acercan entre sí la persona y su imagen.
+                        </p>
+                    </div>
+
+                    <!-- NIVEL AVANZADO · Rose -->
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-rose-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-black text-base">7</div>
+                            <span class="text-rose-700 font-bold text-xs uppercase tracking-widest">Avanzado</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Determine el ángulo $\alpha$ que deben formar dos espejos planos para producir exactamente $11$ imágenes de un objeto puntual entre ellos.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-rose-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-black text-base">8</div>
+                            <span class="text-rose-700 font-bold text-xs uppercase tracking-widest">Avanzado</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            Un rayo láser incide sobre un espejo plano con $\theta_i = 30°$ respecto a la normal. Si el espejo gira $\beta = 10°$ alrededor de un eje contenido en su superficie (manteniendo fijo el rayo incidente), determine cuánto gira el rayo reflejado.
+                        </p>
+                    </div>
+                    <div class="problema-card bg-white p-6 rounded-2xl border-t-8 border-rose-500 shadow-md flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-9 h-9 rounded-full bg-rose-50 text-rose-700 flex items-center justify-center font-black text-base">9</div>
+                            <span class="text-rose-700 font-bold text-xs uppercase tracking-widest">Avanzado</span>
+                        </div>
+                        <p class="text-slate-700 font-medium text-base leading-relaxed">
+                            En un periscopio simple, dos espejos planos paralelos están inclinados $45°$ respecto al eje del tubo. Demuestre que el rayo de luz que entra horizontalmente por la abertura superior emerge horizontalmente y paralelo al rayo de entrada.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- 6. TICKET DE SALIDA                                     -->
+        <!-- ====================================================== -->
+        <div class="slide bg-white p-10">
+            <div class="flex items-center gap-6 mb-8 border-b-4 border-slate-100 pb-4 shrink-0 justify-between">
+                <div class="flex items-center gap-4">
+                    <i data-lucide="check-square" class="w-12 h-12 text-indigo-800"></i>
+                    <h2 class="text-6xl font-bold text-slate-800">Ticket de Salida</h2>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-12 gap-12 flex-1 min-h-[450px]">
+                <div class="col-span-12 xl:col-span-6 flex flex-col justify-center space-y-6">
+                    <div class="bg-slate-50 border border-slate-200 p-8 rounded-3xl shadow-sm">
+                        <p class="text-xl font-medium text-slate-800 leading-relaxed mb-4">
+                            Un estudiante de <strong class="text-indigo-700">1,70 m</strong> de estatura desea adquirir el espejo más pequeño posible para verse de cuerpo entero. Compara dos opciones:
+                        </p>
+                        <ul class="list-disc list-inside text-lg text-slate-700 font-medium space-y-2 ml-2 mb-4">
+                            <li>En el muro de su pieza, a <strong>1 m</strong> de distancia.</li>
+                            <li>Al fondo del pasillo, a <strong>4 m</strong> de distancia.</li>
+                        </ul>
+
+                        <p class="text-xl font-bold text-slate-900 mb-3">Resuelva en su cuaderno:</p>
+                        <ol class="list-decimal list-inside text-lg text-slate-700 font-medium space-y-2 ml-2">
+                            <li>Determine la altura mínima del espejo en cada caso.</li>
+                            <li>Justifique geométricamente por qué la distancia al espejo no influye en su tamaño mínimo.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="col-span-12 xl:col-span-6 flex flex-col bg-slate-900 rounded-3xl p-8 shadow-xl items-center justify-center relative">
+                    <button id="btn-ticket" onclick="revelarTicket()" class="w-full max-w-sm px-8 py-6 bg-indigo-600 text-white rounded-2xl text-2xl font-bold hover:bg-indigo-500 transition shadow-lg border-b-4 border-indigo-800 active:border-b-0 active:mt-1">
+                        Revelar Pauta
+                    </button>
+
+                    <div id="respuesta-ticket" class="hidden absolute inset-0 w-full h-full p-8 flex-col justify-center bg-indigo-50 text-slate-800 rounded-3xl border-4 border-indigo-500 z-10 overflow-y-auto">
+                        <div class="text-base space-y-4 text-left">
+                            <div>
+                                <p class="font-bold text-slate-900 mb-1 bg-indigo-200 w-fit px-3 py-1 rounded-lg">1. Altura mínima</p>
+                                <p class="text-slate-700">En ambos casos:</p>
+                                <p class="font-mono text-center mt-1">$L_{min} = \dfrac{H}{2} = \dfrac{1{,}70}{2} = \mathbf{0{,}85\text{ m}}$</p>
+                            </div>
+                            <div class="border-t-2 border-indigo-200 pt-3">
+                                <p class="font-bold text-slate-900 mb-1 bg-indigo-200 w-fit px-3 py-1 rounded-lg">2. Independencia de la distancia</p>
+                                <p class="text-sm text-slate-700">El rayo desde la cabeza al ojo y el rayo desde los pies al ojo siempre rebotan en los <strong>puntos medios</strong> entre las alturas, por la Ley de Reflexión.</p>
+                                <p class="text-sm text-slate-700 mt-2">Esa relación es <strong>puramente proporcional</strong>: depende solo de la geometría triangular entre la persona y el espejo, no de la distancia. A mayor distancia, la posición vertical del espejo cambia, pero su tamaño mínimo se conserva.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fixed bottom-0 w-full bg-white border-t-2 border-slate-200 px-10 py-5 flex justify-between items-center z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <p class="text-slate-600 font-extrabold tracking-widest uppercase text-xl">
+            CLASE 10 • ESPEJOS PLANOS • LQ
+        </p>
+        <div class="flex gap-4 items-center" id="dot-container">
+            <div class="w-5 h-5 rounded-full bg-indigo-800 shadow-sm transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let currentSlide = 0;
+        let estadoEjemplo = 0;
+        let estadoIntro = 0;
+
+        function updateSlide() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('#dot-container div');
+
+            slides.forEach((s, i) => {
+                s.classList.remove('active');
+                if (i === currentSlide) {
+                    s.classList.add('active');
+                    s.scrollTop = 0;
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                dot.className = i === currentSlide
+                    ? "w-5 h-5 rounded-full bg-indigo-800 shadow-sm transition-all duration-300"
+                    : "w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300";
+            });
+        }
+
+        function changeSlide(d) {
+            const slides = document.querySelectorAll('.slide');
+            const n = currentSlide + d;
+            if (n >= 0 && n < slides.length) {
+                currentSlide = n;
+                updateSlide();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (['ArrowRight', ' ', 'Enter'].includes(e.key)) changeSlide(1);
+            if (['ArrowLeft', 'Backspace'].includes(e.key)) changeSlide(-1);
+        });
+
+        function introPaso(n) {
+            if (n === 1 && estadoIntro === 0) {
+                document.getElementById('signo-pregunta').style.display = 'none';
+                document.getElementById('paso-rayos').classList.add('visible');
+                const b1 = document.getElementById('btn-intro-1');
+                b1.disabled = true;
+                b1.className = 'flex-1 bg-slate-700 text-slate-400 font-bold py-3 px-4 rounded-xl text-sm shadow-md cursor-not-allowed flex items-center justify-center gap-2';
+                const b2 = document.getElementById('btn-intro-2');
+                b2.disabled = false;
+                b2.className = 'flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow-md border-b-4 border-indigo-800 active:border-b-0 active:mt-1 flex items-center justify-center gap-2';
+                lucide.createIcons();
+                estadoIntro = 1;
+            } else if (n === 2 && estadoIntro === 1) {
+                document.getElementById('paso-imagen').classList.add('visible');
+                const b2 = document.getElementById('btn-intro-2');
+                b2.disabled = true;
+                b2.className = 'flex-1 bg-emerald-700 text-emerald-200 font-bold py-3 px-4 rounded-xl text-sm shadow-md cursor-not-allowed flex items-center justify-center gap-2';
+                b2.innerHTML = '<i data-lucide="check-circle"></i> Imagen construida';
+                lucide.createIcons();
+                document.getElementById('intuicion').classList.add('show');
+                estadoIntro = 2;
+            }
+        }
+
+        function avanzarEjemplo() {
+            estadoEjemplo++;
+            if (estadoEjemplo === 1) {
+                document.getElementById('paso-A').classList.remove('hidden');
+                setTimeout(() => document.getElementById('paso-A').classList.add('visible'), 50);
+                document.getElementById('diag-rayo-A').classList.add('visible');
+            } else if (estadoEjemplo === 2) {
+                document.getElementById('paso-B').classList.remove('hidden');
+                setTimeout(() => document.getElementById('paso-B').classList.add('visible'), 50);
+                document.getElementById('diag-rayo-B').classList.add('visible');
+            } else if (estadoEjemplo === 3) {
+                document.getElementById('paso-C').classList.remove('hidden');
+                setTimeout(() => document.getElementById('paso-C').classList.add('visible'), 50);
+                document.getElementById('diag-altura').classList.add('visible');
+                document.getElementById('btn-ejemplo').style.display = 'none';
+            }
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function revelarTicket() {
+            document.getElementById('btn-ticket').style.display = 'none';
+            const res = document.getElementById('respuesta-ticket');
+            res.classList.remove('hidden');
+            res.classList.add('flex');
+            if (window.MathJax) MathJax.typesetPromise([res]);
+        }
+    </script>
+</body>
+</html>
