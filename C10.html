@@ -659,17 +659,27 @@
 
     </div>
 
-    <div class="fixed bottom-0 w-full bg-white border-t-2 border-slate-200 px-10 py-5 flex justify-between items-center z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <p class="text-slate-600 font-extrabold tracking-widest uppercase text-xl">
+    <div class="fixed bottom-0 w-full bg-white border-t-2 border-slate-200 px-4 md:px-8 py-3 flex justify-between items-center gap-3 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <p class="text-slate-500 font-extrabold tracking-widest uppercase text-[10px] sm:text-sm lg:text-lg truncate">
             CLASE 10 • ESPEJOS PLANOS • LQ
         </p>
-        <div class="flex gap-4 items-center" id="dot-container">
-            <div class="w-5 h-5 rounded-full bg-indigo-800 shadow-sm transition-all duration-300"></div>
-            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
-            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
-            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
-            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
-            <div class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300"></div>
+        <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+            <div class="hidden md:flex gap-2 items-center" id="dot-container">
+                <div onclick="goToSlide(0)" class="w-5 h-5 rounded-full bg-indigo-800 shadow-sm transition-all duration-300 cursor-pointer"></div>
+                <div onclick="goToSlide(1)" class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300 cursor-pointer"></div>
+                <div onclick="goToSlide(2)" class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300 cursor-pointer"></div>
+                <div onclick="goToSlide(3)" class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300 cursor-pointer"></div>
+                <div onclick="goToSlide(4)" class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300 cursor-pointer"></div>
+                <div onclick="goToSlide(5)" class="w-5 h-5 rounded-full border-[3px] border-slate-300 transition-all duration-300 cursor-pointer"></div>
+            </div>
+            <button onclick="changeSlide(-1)" aria-label="Anterior"
+                class="flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-100 text-slate-700 border-2 border-slate-200 active:scale-95 active:bg-slate-200 transition select-none">
+                <i data-lucide="chevron-left" class="w-8 h-8"></i>
+            </button>
+            <button onclick="changeSlide(1)" aria-label="Siguiente"
+                class="flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-700 text-white shadow-md active:scale-95 active:bg-indigo-800 transition select-none">
+                <i data-lucide="chevron-right" class="w-8 h-8"></i>
+            </button>
         </div>
     </div>
 
@@ -704,6 +714,14 @@
             const n = currentSlide + d;
             if (n >= 0 && n < slides.length) {
                 currentSlide = n;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(i) {
+            const slides = document.querySelectorAll('.slide');
+            if (i >= 0 && i < slides.length) {
+                currentSlide = i;
                 updateSlide();
             }
         }
